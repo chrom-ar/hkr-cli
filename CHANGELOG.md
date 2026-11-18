@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.1.0
 
 - `hkr` is on Homebrew (`brew install chrom-ar/tap/hkr`) and in Chroma's
   apt and dnf repositories; 0.0.1 was only on GitHub's releases page.
