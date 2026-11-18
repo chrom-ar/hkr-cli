@@ -180,7 +180,7 @@ func newRootCmd(a *app) *cobra.Command {
 	add("start", newLoginCmd(a), newLogoutCmd(a), newWhoamiCmd(a), newUseCmd(a), newOrgsCmd(a), newStatusCmd(a), newGuideCmd(a))
 	add("work", newFindingsCmd(a), newFixesCmd(a), newDomainsCmd(a), newScansCmd(a), newSchedulesCmd(a))
 	add("code", newReposCmd(a), newLinksCmd(a), newReviewsCmd(a), newDepsCmd(a))
-	add("more", newOpenCmd(a), newAPICmd(a))
+	add("more", newOpenCmd(a), newAPICmd(a), newVersionCmd(a))
 	root.SetHelpCommandGroupID("more")
 	root.SetCompletionCommandGroupID("more")
 
@@ -248,29 +248,40 @@ func parentPath(cmd *cobra.Command) string {
 // updateNotice says, at most once a day, when a newer hkr exists:
 // only to a person at a terminal, never under --json or in a pipe.
 func (a *app) updateNotice(ctx context.Context) {
-	if a.flags.json || !a.env.StdoutIsTerminal || !a.env.StderrIsTerminal ||
+	if a.noNotice || a.flags.json || !a.env.StdoutIsTerminal || !a.env.StderrIsTerminal ||
 		a.env.CacheDir == "" || a.env.Getenv("HKR_NO_UPDATE_NOTIFIER") != "" {
 		return
 	}
-	u := &update.Checker{
+	if n := a.updateChecker().Notice(ctx); n != "" {
+		fmt.Fprintf(a.env.Stderr, "\n%s\nUpdate with: %s\n", n, a.upgradeHint())
+	}
+}
+
+func (a *app) updateChecker() *update.Checker {
+	state := ""
+	if a.env.CacheDir != "" {
+		state = filepath.Join(a.env.CacheDir, "hkr", "update.json")
+	}
+	return &update.Checker{
 		Current:   a.env.Build.Version,
-		StatePath: filepath.Join(a.env.CacheDir, "hkr", "update.json"),
+		StatePath: state,
 		URL:       cmp.Or(a.env.UpdateURL, update.LatestURL),
 		HTTP:      a.env.HTTPClient,
 		Now:       a.env.Now,
 	}
-	if n := u.Notice(ctx); n != "" {
-		hint := update.UpgradeHint(update.Install{
-			Exe:    a.env.Executable,
-			GOOS:   cmp.Or(a.env.GOOS, runtime.GOOS),
-			Home:   a.env.Getenv("HOME"),
-			GOPATH: a.env.Getenv("GOPATH"),
-			GOBIN:  a.env.Getenv("GOBIN"),
-			Has: func(p string) bool {
-				_, err := os.Stat(p)
-				return err == nil
-			},
-		})
-		fmt.Fprintf(a.env.Stderr, "\n%s\nUpdate with: %s\n", n, hint)
-	}
+}
+
+// upgradeHint is the command that upgrades hkr, by how it was installed.
+func (a *app) upgradeHint() string {
+	return update.UpgradeHint(update.Install{
+		Exe:    a.env.Executable,
+		GOOS:   cmp.Or(a.env.GOOS, runtime.GOOS),
+		Home:   a.env.Getenv("HOME"),
+		GOPATH: a.env.Getenv("GOPATH"),
+		GOBIN:  a.env.Getenv("GOBIN"),
+		Has: func(p string) bool {
+			_, err := os.Stat(p)
+			return err == nil
+		},
+	})
 }

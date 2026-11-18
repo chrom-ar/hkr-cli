@@ -25,7 +25,8 @@ The installer checks the download against the release's checksums and
 puts `hkr` in `/usr/local/bin` when it can, else `~/.local/bin`
 (`HKR_INSTALL_DIR` picks another). At a terminal, `hkr` says when a new
 version is out, at most once a day (`HKR_NO_UPDATE_NOTIFIER=1` turns it
-off).
+off). `hkr version` checks now, anywhere (`--json` for scripts and
+agents), and says how to upgrade.
 
 On Debian and Ubuntu (after adding Chroma's apt repository once, as in
 [chrom-ar/packages](https://github.com/chrom-ar/packages)):

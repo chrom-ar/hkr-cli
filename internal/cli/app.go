@@ -30,6 +30,7 @@ type app struct {
 	session   *session
 	org       string // Once known, for error hints.
 	domainArg string // The domain as typed, for error hints.
+	noNotice  bool   // The command said whether there's a newer hkr already.
 }
 
 type globalFlags struct {

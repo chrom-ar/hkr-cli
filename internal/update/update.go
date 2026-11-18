@@ -63,6 +63,22 @@ func (c *Checker) Notice(ctx context.Context) string {
 	return notice
 }
 
+// Latest asks for the latest release now, whatever the last check was,
+// remembers it for Notice, and returns its version without the "v".
+func (c *Checker) Latest(ctx context.Context) (string, error) {
+	tag, err := c.fetch(ctx)
+	if err != nil {
+		return "", err
+	}
+	st := c.load()
+	st.CheckedAt, st.Latest = c.Now(), tag
+	c.save(st)
+	return strings.TrimPrefix(tag, "v"), nil
+}
+
+// Newer reports whether version a is a release newer than b.
+func Newer(a, b string) bool { return newer(a, b) }
+
 func (c *Checker) fetch(ctx context.Context) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
