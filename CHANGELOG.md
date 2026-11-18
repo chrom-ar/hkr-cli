@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.1.2
 
 - `hkr version` prints the version and checks for a newer release right
   away, in CI and for agents too, with the command that upgrades it
