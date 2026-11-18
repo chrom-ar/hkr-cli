@@ -1,0 +1,27 @@
+# Wrong usage exits 2, says what was wrong on stderr, and prints nothing
+# on stdout.
+exits 2 hkr --bogus
+stderr '^error: unknown flag: --bogus$'
+stderr '^Run hkr --help for usage\.$'
+! stdout .
+
+exits 2 hkr bogus
+stderr '^error: unknown command "bogus"$'
+! stdout .
+
+# No command: the usage on stderr, exit 2.
+exits 2 hkr
+stderr 'Usage:'
+! stdout .
+
+# Help, with an example, goes to stdout.
+exits 0 hkr --help
+stdout 'Usage:'
+stdout 'Examples:'
+stdout 'hkr findings show'
+! stderr .
+
+# The version, stamped at build time.
+exits 0 hkr --version
+stdout '^hkr dev \(commit none, built unknown\)$'
+! stderr .

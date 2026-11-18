@@ -1,0 +1,78 @@
+# Releases (run by .github/workflows/release.yml when a v* tag is pushed).
+# Check locally with: make release-check (and make release-snapshot).
+version: 2
+
+project_name: hkr
+
+before:
+  hooks:
+    - go mod tidy -diff
+
+builds:
+  - id: hkr
+    main: ./cmd/hkr
+    binary: hkr
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    goos: [darwin, linux, windows]
+    goarch: [amd64, arm64]
+
+archives:
+  - id: hkr
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    # Stable names, so releases/latest/download/<name> always works.
+    name_template: "hkr_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - CHANGELOG.md
+
+checksum:
+  name_template: checksums.txt
+
+nfpms:
+  - id: hkr
+    package_name: hkr
+    vendor: Chroma
+    homepage: https://github.com/chrom-ar/hkr-cli
+    maintainer: Chroma <admin@chrom.ar>
+    description: "Use HKr from the terminal: findings, scans, domains and code."
+    license: MIT
+    formats: [deb, rpm, apk]
+    file_name_template: "hkr_{{ .Os }}_{{ .Arch }}{{ .ConventionalExtension }}"
+    bindir: /usr/bin
+
+homebrew_casks:
+  - name: hkr
+    repository:
+      owner: chrom-ar
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+    homepage: https://github.com/chrom-ar/hkr-cli
+    description: "Use HKr from the terminal: findings, scans, domains and code"
+    commit_author:
+      name: chroma-bot
+      email: admin@chrom.ar
+    hooks:
+      post:
+        # Release binaries are not notarized; let macOS run them.
+        install_steps: |
+          on_macos do
+            run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{ .StagedPath }}/hkr"]
+          end
+
+changelog:
+  # Release notes come from CHANGELOG.md, written for the people who use hkr.
+  disable: true
+
+release:
+  github:
+    owner: chrom-ar
+    name: hkr-cli
