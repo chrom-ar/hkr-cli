@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X",
+    "body": {
+      "max_duration_seconds": 14400,
+      "max_spend_usd": "60",
+      "preset_key": "deep_run"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "archived": false,
+      "attested": false,
+      "created_at": "2026-11-18T12:00:00Z",
+      "id": "DomShop7Kq2X",
+      "last_scan": null,
+      "max_duration_seconds": 14400,
+      "max_spend_usd": "60.00",
+      "name": "Shop",
+      "open_findings": {
+        "critical": 0,
+        "high": 1,
+        "informational": 0,
+        "low": 1,
+        "medium": 0
+      },
+      "preset_key": "deep_run",
+      "root_domain": "shop.example.com",
+      "scope_breadth": "domain",
+      "status": "draft",
+      "url": "http://hkr.test/domains/DomShop7Kq2X",
+      "verified": false
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X/evidence"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "content_type": "application/octet-stream",
+          "path": "F-01/request.txt",
+          "scan": 1,
+          "size": 1832
+        },
+        {
+          "content_type": "image/png",
+          "path": "F-01/screenshot.png",
+          "scan": 1,
+          "size": 20480
+        }
+      ],
+      "next_cursor": null
+    }
+  }
+}

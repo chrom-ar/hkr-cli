@@ -1,0 +1,38 @@
+# hkr links: which repository deploys or defines which host, so fixes
+# know where to open pull requests.
+env HKR_TOKEN=hkrp_test_token_setup
+env HKR_ORG=acme
+fake-hkr links.list.ok links.list.proposed link.confirm.ok link.reject.ok setup.get.complete
+exits 0 hkr links list
+stdout '^ID            STATUS     REPOSITORY  HOST                  KIND     SOURCE$'
+stdout '^LnkConf8Mn3Y  confirmed  acme/web    api\.shop\.example\.com  deploys  human$'
+
+exits 0 hkr links list --status proposed
+stdout '^LnkProp7Kq2X  proposed  acme/web    shop\.example\.com  defines  agent \(80%\)$'
+
+exits 0 hkr links confirm LnkProp7Kq2X
+stdout '^Confirmed: acme/web defines shop\.example\.com\.$'
+stderr '^Next \(optional\): '
+
+exits 0 hkr links reject LnkProp7Kq2X
+stdout '^Rejected: acme/web defines shop\.example\.com\.$'
+
+exits 2 hkr links list --status maybe
+stderr 'unknown --status "maybe": use proposed, confirmed or rejected'
+
+# add: created, then confirmed, since the person means it.
+fake-hkr link.create.ok link.confirm.new link.create.invalid setup.get.complete
+exits 0 hkr links add acme/web shop.example.com --kind defines
+stdout '^Confirmed: acme/web defines shop\.example\.com\.$'
+
+exits 1 hkr links add acme/nope nowhere.example
+stderr '^  repo: isn''t a repository HKr can see here$'
+stderr '^  target: isn''t one of your domains'' hosts in scope$'
+
+exits 2 hkr links add acme/web shop.example.com --kind owns
+stderr 'unknown --kind "owns": use deploys, defines or unknown'
+
+# --repo takes the full name; HKr wants the id.
+fake-hkr repos.list.ok links.list.repo
+exits 0 hkr links list --repo acme/web
+stdout '^LnkConf8Mn3Y '

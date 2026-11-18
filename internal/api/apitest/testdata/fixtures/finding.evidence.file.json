@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X/evidence/F-01/request.txt",
+    "query": {
+      "scan": "1"
+    }
+  },
+  "response": {
+    "status": 302,
+    "headers": {
+      "Content-Type": "text/html; charset=utf-8",
+      "Location": "https://mock.s3.test/runs/RunScn7Kq2Xp/evidence/F-01/request.txt?response-content-type=application%2Foctet-stream&response-content-disposition=attachment%3B+filename%3D%22request.txt%22"
+    },
+    "body": "<html><body>You are being <a href=\"https://mock.s3.test/runs/RunScn7Kq2Xp/evidence/F-01/request.txt?response-content-type=application%2Foctet-stream&amp;response-content-disposition=attachment%3B+filename%3D%22request.txt%22\">redirected</a>.</body></html>"
+  }
+}

@@ -1,0 +1,32 @@
+# Settling findings: mark fixed (HKr suggested it), accept the risk,
+# reopen.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr finding.mark_fixed.ok finding.mark_fixed.no_suggestion
+exits 0 hkr findings mark-fixed FndHigh7Kq2X
+stdout '^F-01 is marked fixed\.$'
+exits 1 hkr findings mark-fixed FndHigh7Kq2X
+stderr '^error: HKr hasn''t suggested that this finding is fixed\.$'
+
+fake-hkr finding.accept.ok finding.accept.not_open
+exits 0 hkr findings accept FndHigh7Kq2X --reason 'Only reachable from the office VPN; revisit in March.'
+stdout '^F-01 is accepted\.$'
+exits 1 hkr findings accept FndHigh7Kq2X --reason Fine
+stderr '^error: Only an open finding can be accepted\.$'
+
+# The reason is required, and asked for before calling HKr.
+exits 2 hkr findings accept FndHigh7Kq2X
+stderr 'accept needs --reason'
+
+fake-hkr finding.reopen.ok finding.reopen.not_accepted
+exits 0 hkr findings reopen FndHigh7Kq2X
+stdout '^F-01 is open again \(confirmed\)\.$'
+exits 1 hkr findings reopen FndHigh7Kq2X
+stderr '^error: This finding isn''t accepted\.$'
+
+# A read-only token can't change anything: exit 3.
+fake-hkr finding.accept.read_only
+env HKR_TOKEN=hkrp_test_token_read
+exits 3 hkr findings accept FndHigh7Kq2X --reason Fine
+stderr '^error: This token is read-only\.$'
+stderr 'create one with write access'

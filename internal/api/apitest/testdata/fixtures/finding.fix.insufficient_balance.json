@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X/fixes"
+  },
+  "response": {
+    "status": 402,
+    "body": {
+      "error": {
+        "code": "insufficient_balance",
+        "message": "Not enough balance to finish a fix. Add credit and try again."
+      }
+    }
+  }
+}

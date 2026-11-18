@@ -1,0 +1,31 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/repos"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "archived": false,
+          "default_branch": "main",
+          "fix_level": "critical",
+          "full_name": "acme/web",
+          "id": "RepWeb7Kq2Xp",
+          "last_synced_at": "2026-11-18T12:00:00Z",
+          "private": true,
+          "provider": "github",
+          "review_branches": [],
+          "review_min_minutes": 0,
+          "review_on_push": false,
+          "review_paths": [],
+          "reviewed_at": "2026-11-18T12:00:00Z",
+          "url": "http://hkr.test/code/RepWeb7Kq2Xp",
+          "watch_dependencies": true
+        }
+      ],
+      "next_cursor": null
+    }
+  }
+}

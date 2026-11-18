@@ -1,0 +1,31 @@
+# hkr use: a default organization for this HKr.
+env HKR_TOKEN=hkrp_test_token_laptop
+fake-hkr orgs.get.ok orgs.get.not_found me.ok
+
+exits 0 hkr use
+stdout '^No default on http://127\.0\.0\.1:\d+\.$'
+stderr 'hkr use <org>$'
+
+# It's checked against HKr, then stored.
+exits 0 hkr use acme
+stdout '^Commands on http://127\.0\.0\.1:\d+ now use acme\.$'
+stderr '--org and HKR_ORG still win\.'
+grep '"org": "acme"' config/hkr/config.json
+
+exits 0 hkr use
+stdout '^acme$'
+
+exits 0 hkr whoami
+stdout '^Default: acme$'
+
+# One HKr can't see isn't stored.
+exits 1 hkr use nope
+stderr '^error: That doesn''t exist, or this token can''t see it\.$'
+grep '"org": "acme"' config/hkr/config.json
+
+exits 2 hkr use acme/shop
+stderr 'expected an organization''s slug'
+
+exits 0 hkr use --clear
+stdout '^No default on'
+! grep acme config/hkr/config.json

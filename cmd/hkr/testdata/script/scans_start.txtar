@@ -1,0 +1,40 @@
+# hkr scans start: costs credit, so it says how much and asks, or --yes.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr scan.start.dry_run
+exits 0 hkr scans start DomShop7Kq2X --dry-run
+stdout '^A scan of DomShop7Kq2X can start: it stops at \$300\.00 \(balance \$5000\.00; starting needs \$41\.08\)\.$'
+
+exits 2 hkr scans start DomShop7Kq2X
+stderr 'a scan costs credit: pass --yes to start it without a terminal \(--dry-run says what it would cost\)'
+
+fake-hkr scan.start.ok setup.get.complete
+exits 0 hkr scans start DomShop7Kq2X --yes --instruction 'Start with the orders API.'
+stdout '^Started scan 1 of DomShop7Kq2X \(pending\)\.$'
+stderr 'hkr scans follow DomShop7Kq2X 1'
+stderr '^Next \(optional\): hkr schedules create'
+
+# Refusals say what to do.
+fake-hkr scan.start.not_verified
+exits 1 hkr scans start DomShop7Kq2X --yes
+stderr '^error: Prove you control this domain before scanning it\.$'
+stderr '^run: hkr domains verify DomShop7Kq2X$'
+
+fake-hkr scan.start.not_attested
+exits 1 hkr scans start DomShop7Kq2X --yes
+stderr '^run: hkr domains attest DomShop7Kq2X --name '
+
+fake-hkr scan.start.run_already_active
+exits 1 hkr scans start DomShop7Kq2X --yes
+stderr '^see it: hkr scans show DomShop7Kq2X$'
+
+fake-hkr scan.start.insufficient_balance
+exits 1 hkr scans start DomShop7Kq2X --yes
+stderr '^add credit: http://'
+
+# Limits for this scan only.
+fake-hkr scan.start.with_limits scan.start.invalid_limits
+exits 0 hkr scans start DomShop7Kq2X --yes --instruction 'Start with the orders API.' --preset first_look --max-spend 75 --max-duration 2h
+stdout '^Started scan 1 of DomShop7Kq2X'
+exits 1 hkr scans start DomShop7Kq2X --yes --preset huge
+stderr '^  preset_key: is invalid$'

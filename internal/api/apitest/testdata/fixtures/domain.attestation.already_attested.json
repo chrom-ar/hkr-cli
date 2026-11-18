@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/attestation",
+    "headers": {
+      "Accept-Language": "en"
+    },
+    "body": {
+      "name": "Ada Lovelace",
+      "statement": "I have the owner's authorization for these tests."
+    }
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "already_attested",
+        "message": "This domain's authorization is already recorded."
+      }
+    }
+  }
+}

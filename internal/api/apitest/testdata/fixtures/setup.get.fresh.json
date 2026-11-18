@@ -1,0 +1,53 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/setup"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "complete": false,
+      "next": {
+        "blocked_by": [],
+        "can_act": true,
+        "detail": {
+          "domains": 0
+        },
+        "domain": null,
+        "done": false,
+        "key": "domain",
+        "minutes": 0.5,
+        "optional": false,
+        "url": "http://hkr.test/domains/new"
+      },
+      "steps": [
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "domains": 0
+          },
+          "domain": null,
+          "done": false,
+          "key": "domain",
+          "minutes": 0.5,
+          "optional": false,
+          "url": "http://hkr.test/domains/new"
+        },
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "connections": []
+          },
+          "domain": null,
+          "done": false,
+          "key": "git_host",
+          "minutes": 2,
+          "optional": true,
+          "url": "http://hkr.test/code"
+        }
+      ]
+    }
+  }
+}

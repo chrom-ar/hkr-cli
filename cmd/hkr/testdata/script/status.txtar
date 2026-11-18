@@ -1,0 +1,33 @@
+# hkr status: what's left to set up, from HKr's own checklist.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr setup.get.partial
+exits 0 hkr status
+stdout '^acme: 1 of 4 done$'
+stdout '^  ✓ Add a domain                  1 domain$'
+stdout '^  ✗ Prove you control it          shop\.example\.com \(~5 min\)$'
+stdout '^  ✗ State you''re authorized       shop\.example\.com$'
+stdout '^  · First scan                    shop\.example\.com: waits for verify, authorize \(\$5000\.00 of credit\)$'
+stdout '^  ✓ Connect a git host            github \(acme\)  optional$'
+stdout '^  ✓ Link repositories to hosts    shop\.example\.com: 1 linked  optional$'
+stdout '^  ✗ Schedule scans                shop\.example\.com: none  optional$'
+stderr '^Next: hkr domains verify shop\.example\.com$'
+
+exits 0 hkr status --json
+stdout '"steps": \['
+
+# --check exits 1 while anything required is left, for loops.
+exits 1 hkr status --check
+stderr '^Next: hkr domains verify shop\.example\.com$'
+
+fake-hkr setup.get.fresh
+exits 0 hkr status
+stdout '^acme: 0 of 1 done$'
+stdout '^  ✗ Add a domain                  none yet$'
+stderr '^Next: hkr domains create <root-domain>$'
+
+# Done, but optional steps remain: --check passes, and says what's next.
+fake-hkr setup.get.complete
+exits 0 hkr status --check
+stdout '^acme: 4 of 4 done$'
+stderr '^Next \(optional\): hkr schedules create shop\.example\.com --every week --weekday mon --at 03:00$'

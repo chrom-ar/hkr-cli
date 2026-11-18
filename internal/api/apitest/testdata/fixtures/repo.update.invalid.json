@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/orgs/acme/repos/RepWeb7Kq2Xp",
+    "body": {
+      "fix_level": "max"
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "invalid",
+        "fields": {
+          "fix_level": [
+            "must be off, critical, high or medium"
+          ]
+        },
+        "message": "Some values aren't valid."
+      }
+    }
+  }
+}

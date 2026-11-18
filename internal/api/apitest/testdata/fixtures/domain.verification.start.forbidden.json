@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/verification",
+    "body": {
+      "method": "http_file"
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": {
+      "error": {
+        "code": "forbidden",
+        "message": "Your role here doesn't allow it."
+      }
+    }
+  }
+}

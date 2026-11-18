@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/scans/1/steer",
+    "body": {
+      "message": "Look at the admin panel next."
+    }
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "terminal",
+        "message": "This scan has finished."
+      }
+    }
+  }
+}

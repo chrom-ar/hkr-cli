@@ -1,0 +1,28 @@
+# hkr repos connect: the browser does the connecting, as an admin of the
+# organization; the CLI waits for the connection to show up.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr connections.list.empty connections.list.ok repos.list.ok setup.get.complete
+exits 0 hkr repos connect github
+stdout '^http://127\.0\.0\.1:\d+/vcs/github/connect\?org=acme$'
+stderr 'needs an admin of acme signed in'
+stdout '^Connected github \(acme\)\.$'
+stdout '^RepWeb7Kq2Xp  acme/web '
+stderr '^Next \(optional\): hkr schedules create'
+! exists browser.log
+
+# --no-wait only prints the page.
+exits 0 hkr repos connect gitlab --no-wait
+stdout '/vcs/gitlab/connect\?org=acme$'
+! stdout Connected
+
+exits 2 hkr repos connect svn
+stderr 'unknown provider "svn": use github, gitlab or bitbucket'
+
+# --json: stdout is only HKr's JSON; the page goes to stderr.
+fake-hkr connections.list.empty connections.list.ok repos.list.ok
+exits 0 hkr repos connect github --json
+stderr '/vcs/github/connect\?org=acme'
+! stdout 'vcs/github'
+! stdout Connected
+stdout '"full_name": "acme/web"'

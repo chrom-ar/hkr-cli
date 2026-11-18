@@ -1,0 +1,34 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/targets"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "discovered_at": "2026-11-18T12:00:00Z",
+          "discovered_by": "seed",
+          "id": "TgtApi8Mn3Yq",
+          "in_scope": true,
+          "kind": "subdomain",
+          "parent_id": null,
+          "resolved_ips": [],
+          "value": "api.shop.example.com"
+        },
+        {
+          "discovered_at": "2026-11-18T12:00:00Z",
+          "discovered_by": "seed",
+          "id": "TgtRoot7Kq2X",
+          "in_scope": true,
+          "kind": "domain",
+          "parent_id": null,
+          "resolved_ips": [],
+          "value": "shop.example.com"
+        }
+      ],
+      "next_cursor": null
+    }
+  }
+}

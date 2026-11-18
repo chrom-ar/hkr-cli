@@ -1,0 +1,81 @@
+# hkr findings list: open findings across domains, most severe first.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr findings.list.ok findings.list.filtered findings.list.empty
+exits 0 hkr findings list
+stdout '^ID            SEVERITY  STATUS     DOMAIN            TITLE$'
+stdout '^FndHigh7Kq2X  high      confirmed  shop\.example\.com  Orders of other customers readable by id$'
+stdout '^FndLow8Mn3Yq  low       confirmed  shop\.example\.com  Reflected XSS in search$'
+! stderr .
+
+# --severity is a minimum: high means high and critical.
+exits 0 hkr findings list --severity high --domain DomShop7Kq2X --class idor
+stdout '^FndHigh7Kq2X '
+! stdout FndLow8Mn3Yq
+
+exits 0 hkr findings list --state accepted
+stdout '^No accepted findings\.$'
+
+exits 0 hkr findings list --json
+stdout '"id": "FndHigh7Kq2X"'
+stdout '"next_cursor": null'
+
+# Wrong values are usage mistakes, caught before asking HKr.
+exits 2 hkr findings list --state closed
+stderr 'unknown --state "closed": use open, fixed, accepted or all'
+exits 2 hkr findings list --severity huge
+stderr 'unknown severity "huge": use critical, high, medium, low or informational'
+exits 2 hkr findings list --source human
+stderr 'unknown --source "human": use scan or review'
+
+# hkr findings show: by id or by the web URL.
+fake-hkr finding.get.ok finding.get.markdown finding.get.not_found
+exits 0 hkr findings show FndHigh7Kq2X
+stdout '^F-01  Orders of other customers readable by id$'
+stdout '^Severity  high \(CVSS 7\.5, CVSS:3\.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N\)$'
+stdout '^Status    confirmed$'
+stdout '^Domain    Shop \(shop\.example\.com\)$'
+stdout '^Target    api\.shop\.example\.com$'
+stdout '^URL       http://127\.0\.0\.1:\d+/findings/FndHigh7Kq2X$'
+stdout '^REPRODUCTION$'
+stdout '^1\. Sign in as customer A\.$'
+stdout '^2\. GET /orders/<an id of customer B>\.$'
+! stdout 'SEVERITY JUSTIFICATION'
+
+exits 0 hkr findings show $URL/findings/FndHigh7Kq2X
+stdout '^F-01  '
+
+exits 0 hkr findings show FndHigh7Kq2X --markdown
+cmp stdout finding.md
+
+exits 1 hkr findings show Nope7Kq2XpAb
+stderr '^error: That doesn''t exist, or this token can''t see it\.$'
+
+exits 2 hkr findings show not-an-id
+stderr 'isn''t a finding id or a finding URL'
+
+-- finding.md --
+# F-01 — Orders of other customers readable by id
+
+**high** · confirmed · CVSS 7.5 (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N)
+
+## Affected
+
+https://api.shop.example.com/orders/:id
+
+## Summary
+
+Any signed-in customer can read any order by changing its id.
+
+## Reproduction
+
+1. Sign in as customer A.
+2. GET /orders/<an id of customer B>.
+
+## Impact
+
+Names, addresses and order contents of every customer.
+
+## Remediation
+
+Check that the order belongs to the signed-in customer.

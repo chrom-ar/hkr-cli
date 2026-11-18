@@ -1,0 +1,10 @@
+{
+  "request": {
+    "method": "DELETE",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/schedules/SchWeek7Kq2X"
+  },
+  "response": {
+    "status": 204,
+    "body": ""
+  }
+}

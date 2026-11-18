@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/attestation",
+    "headers": {
+      "Accept-Language": "en"
+    },
+    "body": {
+      "name": "Ada Lovelace",
+      "statement": "I have the owner's authorization for these tests."
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "attested": true,
+      "attested_at": "2026-11-18T12:00:00Z",
+      "attested_by_name": "Ada Lovelace",
+      "statement": "I have the owner's authorization for these tests."
+    }
+  }
+}

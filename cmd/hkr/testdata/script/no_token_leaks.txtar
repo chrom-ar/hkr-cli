@@ -1,0 +1,17 @@
+# No token in any output, even with --verbose, success or failure.
+env HKR_TOKEN=hkrp_test_token_laptop
+fake-hkr me.ok orgs.list.ok me.unauthorized
+exits 0 hkr whoami -v
+! stdout hkrp_test_token_laptop
+! stderr hkrp_test_token_laptop
+stderr 'level=DEBUG msg=request method=GET path=/api/v1/me status=200'
+
+exits 0 hkr orgs list -v --json
+! stdout hkrp_test_token_laptop
+! stderr hkrp_test_token_laptop
+
+env HKR_DEBUG=1
+exits 3 hkr whoami
+! stdout hkrp_test_token_laptop
+! stderr hkrp_test_token_laptop
+stderr 'level=DEBUG'

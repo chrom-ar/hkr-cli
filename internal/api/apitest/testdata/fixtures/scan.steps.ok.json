@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/scans/1/steps"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "at": "2026-11-18T12:00:00Z",
+          "id": "StpMap7Kq2Xp",
+          "importance": "key",
+          "summary": "Mapped the orders API",
+          "target": null
+        },
+        {
+          "at": "2026-11-18T12:00:00Z",
+          "id": "StpRead8Mn3Y",
+          "importance": "key",
+          "summary": "Read another customer's order",
+          "target": null
+        }
+      ],
+      "next_cursor": "cursor_test_after_idor"
+    }
+  }
+}

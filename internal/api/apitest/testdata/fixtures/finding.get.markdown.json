@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X",
+    "headers": {
+      "Accept": "text/markdown"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "text/markdown; charset=utf-8"
+    },
+    "body": "# F-01 — Orders of other customers readable by id\n\n**high** · confirmed · CVSS 7.5 (CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N)\n\n## Affected\n\nhttps://api.shop.example.com/orders/:id\n\n## Summary\n\nAny signed-in customer can read any order by changing its id.\n\n## Reproduction\n\n1. Sign in as customer A.\n2. GET /orders/<an id of customer B>.\n\n## Impact\n\nNames, addresses and order contents of every customer.\n\n## Remediation\n\nCheck that the order belongs to the signed-in customer."
+  }
+}

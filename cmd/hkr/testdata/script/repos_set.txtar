@@ -1,0 +1,32 @@
+# hkr repos set: review on push, branches, paths, dependency watching and
+# the fix level. Needs a token with setup changes.
+env HKR_TOKEN=hkrp_test_token_setup
+env HKR_ORG=acme
+fake-hkr repo.update.ok repo.update.invalid setup.get.complete
+
+# A fix level lets HKr spend on its own: it asks, or --yes.
+exits 2 hkr repos set RepWeb7Kq2Xp --fix-level high
+stderr 'a fix level lets HKr spend on its own: pass --yes'
+
+# Reviews on push are billed: turning them on asks too.
+exits 2 hkr repos set RepWeb7Kq2Xp --review-on-push on
+stderr 'each push review spends credit: pass --yes'
+
+exits 0 hkr repos set RepWeb7Kq2Xp --review-on-push on --branches 'main,release/*' --paths 'lib/**' --min-minutes 10 --watch-deps on --fix-level high --yes
+stdout '^acme/web  github, main, private$'
+stdout '^Reviews   on every push to main, release/\*, under lib/\*\*$'
+stdout '^Watching  dependencies, fixing high on its own$'
+
+exits 1 hkr repos set RepWeb7Kq2Xp --fix-level max --yes
+stderr '^  fix_level: must be off, critical, high or medium$'
+
+exits 2 hkr repos set RepWeb7Kq2Xp --review-on-push maybe
+stderr 'invalid --review-on-push "maybe": use on or off'
+exits 2 hkr repos set RepWeb7Kq2Xp
+stderr 'nothing to change'
+
+# Without setup changes on the token: exit 3, and how to get one.
+fake-hkr repo.update.setup_scope
+env HKR_TOKEN=hkrp_test_token_laptop
+exits 3 hkr repos set RepWeb7Kq2Xp --fix-level high --yes
+stderr '^this token can''t change setup: run hkr login --setup$'

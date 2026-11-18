@@ -1,0 +1,29 @@
+# hkr api: a raw request; hkr open: the web page's URL.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr me.ok scan.get.latest
+exits 0 hkr api /me
+stdout '"email": "ada@example.com"'
+exits 0 hkr api api/v1/me
+stdout '"token": \{'
+exits 2 hkr api '/me?x=1'
+stderr 'pass query parameters with -f'
+
+exits 0 hkr open
+stdout '^http://127\.0\.0\.1:\d+/$'
+exits 0 hkr open finding FndHigh7Kq2X
+stdout '^http://127\.0\.0\.1:\d+/findings/FndHigh7Kq2X$'
+exits 0 hkr open domain DomShop7Kq2X
+stdout '/domains/DomShop7Kq2X$'
+exits 0 hkr open scan DomShop7Kq2X 3
+stdout '/domains/DomShop7Kq2X/scans/3$'
+exits 0 hkr open scan DomShop7Kq2X
+stdout '/domains/DomShop7Kq2X/scans/1$'
+exits 0 hkr open repo RepWeb7Kq2Xp
+stdout '/code/RepWeb7Kq2Xp$'
+! exists browser.log
+
+exits 2 hkr open issue x
+stderr 'unknown page "issue"'
+exits 2 hkr open finding
+stderr 'usage: hkr open finding <id\|url>'

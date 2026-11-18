@@ -1,0 +1,38 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/audits",
+    "query": {
+      "action": "finding.accepted"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "action": "finding.accepted",
+          "actor": {
+            "id": "UsrAda7Kq2Xp",
+            "last_name": "Lovelace",
+            "name": "Ada"
+          },
+          "changes": {
+            "reason": "Only reachable from the VPN.",
+            "status": [
+              "confirmed",
+              "accepted"
+            ]
+          },
+          "created_at": "2026-11-18T12:00:00Z",
+          "id": "AdtAcpt8Mn3Y",
+          "ip": "203.0.113.9",
+          "target_id": "FndHigh7Kq2X",
+          "target_type": "finding",
+          "via": "token: hkr on test-host"
+        }
+      ],
+      "next_cursor": null
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains",
+    "body": {
+      "name": "Blog",
+      "root_domain": "blog.example.com"
+    }
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "archived": false,
+      "attested": false,
+      "created_at": "2026-11-18T12:00:00Z",
+      "id": "DomShop7Kq2X",
+      "last_scan": null,
+      "max_duration_seconds": null,
+      "max_spend_usd": null,
+      "name": "Blog",
+      "open_findings": {
+        "critical": 0,
+        "high": 0,
+        "informational": 0,
+        "low": 0,
+        "medium": 0
+      },
+      "preset_key": null,
+      "root_domain": "blog.example.com",
+      "scope_breadth": "domain",
+      "status": "draft",
+      "url": "http://hkr.test/domains/DomShop7Kq2X",
+      "verified": false
+    }
+  }
+}

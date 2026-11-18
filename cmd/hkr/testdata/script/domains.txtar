@@ -1,0 +1,39 @@
+# hkr domains: list, show, map and export.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr domains.list.ok domains.list.query domain.get.ok domain.targets.ok domain.export.markdown domain.get.not_found setup.get.partial
+exits 0 hkr domains list
+stdout '^ID            NAME  ROOT DOMAIN       STATUS  OPEN           LAST SCAN$'
+stdout '^DomShop7Kq2X  Shop  shop\.example\.com  draft   1 high, 1 low  —$'
+
+# A domain is named by its root domain, its name or its id.
+exits 0 hkr domains show shop
+stdout '^Shop  shop\.example\.com$'
+stdout '^Status    draft: not verified, not attested$'
+stdout '^Open      1 high, 1 low$'
+stdout '^Limits    the preset''s$'
+stdout '^URL       http://127\.0\.0\.1:\d+/domains/DomShop7Kq2X$'
+stderr '^Next: hkr domains verify shop\.example\.com$'
+
+exits 0 hkr domains show DomShop7Kq2X --json
+stdout '"root_domain": "shop\.example\.com"'
+
+exits 0 hkr domains map DomShop7Kq2X
+stdout '^VALUE                 KIND       SCOPE  FOUND BY$'
+stdout '^api\.shop\.example\.com  subdomain  in     seed$'
+
+exits 0 hkr domains export DomShop7Kq2X
+stdout '^# shop\.example\.com$'
+stdout '^# F-01 — Orders of other customers readable by id$'
+
+exits 1 hkr domains show Nope7Kq2XpAb
+stderr '^error: That doesn''t exist, or this token can''t see it\.$'
+
+fake-hkr domains.list.empty
+exits 0 hkr domains list
+stdout '^No domains yet\. Add one: hkr domains create <root-domain>$'
+
+# A name nothing matches is a usage mistake.
+fake-hkr domains.list.query_none
+exits 2 hkr domains show nowhere.example
+stderr '^error: no domain matches "nowhere\.example"; see hkr domains list$'

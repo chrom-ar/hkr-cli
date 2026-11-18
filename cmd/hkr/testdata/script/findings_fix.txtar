@@ -1,0 +1,46 @@
+# hkr findings fix: ask HKr for a fix pull request. It costs credit.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+
+# --dry-run says whether it can start and what it may cost, and spends
+# nothing.
+fake-hkr finding.fix.dry_run
+exits 0 hkr findings fix FndHigh7Kq2X --dry-run
+stdout '^A fix for FndHigh7Kq2X can start: about \$10\.10 \(balance \$5000\.00\)\.$'
+
+# Without a terminal to ask at, it needs --yes, and calls nothing.
+exits 2 hkr findings fix FndHigh7Kq2X
+stderr 'a fix costs credit: pass --yes to ask for it without a terminal \(--dry-run says what it would cost\)'
+
+# --yes, then --wait until it's done.
+fake-hkr finding.fix.created fix.get.running fix.get.verified
+exits 0 hkr findings fix FndHigh7Kq2X --yes --wait
+stderr '^Fix FixWeb7Kq2Xp: pending\.$'
+stderr '^Fix FixWeb7Kq2Xp: running\.$'
+stdout '^Fix FixWeb7Kq2Xp is verified: https://github\.com/acme/web/pull/12$'
+
+# Refusals, in HKr's words.
+fake-hkr finding.fix.insufficient_balance
+exits 1 hkr findings fix FndHigh7Kq2X --yes
+stderr '^error: Not enough balance to finish a fix\. Add credit and try again\.$'
+stderr '^add credit: http://127\.0\.0\.1:\d+/organization/billing$'
+
+fake-hkr finding.fix.already_running
+exits 1 hkr findings fix FndHigh7Kq2X --yes
+stderr 'already running'
+
+fake-hkr finding.fix.no_repository
+exits 1 hkr findings fix FndLow8Mn3Yq --yes
+stderr '^error: This finding is not attached to a host\.$'
+
+# The fixes of a finding, one fix, and opening its pull request.
+fake-hkr finding.fixes.ok fix.get.verified fix.pull_request.ok
+exits 0 hkr findings fixes FndHigh7Kq2X
+stdout '^ID            STATUS    REPOSITORY  PULL REQUEST$'
+stdout '^FixWeb7Kq2Xp  verified  acme/web    https://github\.com/acme/web/pull/12 \(open\)$'
+
+exits 0 hkr fixes show FixWeb7Kq2Xp
+stdout '^Fix FixWeb7Kq2Xp is verified: https://github\.com/acme/web/pull/12$'
+
+exits 0 hkr fixes open-pr FixWeb7Kq2Xp
+stdout '^Opened https://github\.com/acme/web/pull/12$'

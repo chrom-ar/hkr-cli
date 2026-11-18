@@ -1,0 +1,21 @@
+# hkr scans follow on a scan that has ended: its timeline, how it ended,
+# and no live stream.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr scan.get.completed scan.steps.completed findings.list.scan
+exits 0 hkr scans follow DomShop7Kq2X 2
+stdout '^12:00  Mapped the orders API$'
+stdout '^12:00  Read another customer''s order$'
+stdout '^Scan 2 of DomShop7Kq2X completed \(agent_done\): 1 new finding, \$0\.00\.$'
+
+# --fail-on: exit 4 when the scan saw anything that severe, for CI.
+exits 4 hkr scans follow DomShop7Kq2X 2 --fail-on high
+stderr '^1 finding at or above high: FndHigh7Kq2X$'
+
+# --json: one event per line.
+exits 0 hkr scans follow DomShop7Kq2X 2 --json
+stdout '^\{"event":"step","data":\{"at":"2026-11-18T12:00:00Z","id":"StpMap7Kq2Xp"'
+stdout '^\{"event":"ended","data":\{.*"status":"completed"'
+
+exits 2 hkr scans follow DomShop7Kq2X 2 --fail-on huge
+stderr 'unknown severity "huge"'

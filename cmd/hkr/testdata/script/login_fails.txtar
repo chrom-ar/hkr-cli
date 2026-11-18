@@ -1,0 +1,10 @@
+# A denied or expired login exits 3 and stores nothing.
+fake-hkr login.device.ok login.token.denied
+exits 3 hkr login
+stderr '^error: the login was denied in the browser$'
+! exists config/hkr/tokens.json
+
+fake-hkr login.device.ok login.token.pending login.token.expired
+exits 3 hkr login
+stderr 'error: the code expired before it was approved; run hkr login again'
+! exists config/hkr/tokens.json

@@ -1,0 +1,79 @@
+# Setting a domain up: create, verify, attest, limits.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr domain.create.ok domain.create.invalid setup.get.partial
+exits 0 hkr domains create blog.example.com --name Blog
+stdout '^Created Blog \(blog\.example\.com\): DomShop7Kq2X$'
+stderr '^Next: hkr domains verify shop\.example\.com$'
+
+exits 1 hkr domains create '' --name Blog
+stderr '^error: Some values aren''t valid\.$'
+stderr '^  root_domain: can''t be blank$'
+
+# verify starts the DNS challenge when there's none, and says what to
+# publish.
+fake-hkr domain.verification.none domain.verification.start.ok setup.get.partial
+exits 0 hkr domains verify DomShop7Kq2X
+stdout '^Add this DNS record to prove you control shop\.example\.com:$'
+stdout '^  TXT  _hkr-challenge\.shop\.example\.com  hkr-verify=test_challenge_token$'
+stdout 'Then: hkr domains verify DomShop7Kq2X --check'
+stderr '^Next: hkr domains verify shop\.example\.com$'
+
+# --check checks now: exit 1 until it passes, so a script can wait.
+fake-hkr domain.verification.check.pending domain.verification.check.verified
+exits 1 hkr domains verify DomShop7Kq2X --check
+stdout '^Not verified yet \(record_not_found\)\. HKr checks every minute too\.$'
+exits 0 hkr domains verify DomShop7Kq2X --check
+stdout '^shop\.example\.com is verified\.$'
+
+# With a challenge open, verify (no flags) checks it.
+fake-hkr domain.verification.pending domain.verification.check.pending
+exits 1 hkr domains verify DomShop7Kq2X
+stdout '^Not verified yet \(record_not_found\)\. HKr checks every minute too\.$'
+stdout '^  TXT  _hkr-challenge\.shop\.example\.com  hkr-verify=test_challenge_token$'
+
+fake-hkr domain.verification.check.no_challenge
+exits 1 hkr domains verify DomShop7Kq2X --check
+stderr 'No check was started for this domain'
+
+# Other methods are for admins.
+fake-hkr domain.verification.start.forbidden
+env HKR_TOKEN=hkrp_test_token_member
+exits 1 hkr domains verify DomShop7Kq2X --method http_file
+stderr '^error: Your role here doesn''t allow it\.$'
+env HKR_TOKEN=hkrp_test_token_laptop
+
+exits 2 hkr domains verify DomShop7Kq2X --method carrier_pigeon
+stderr 'unknown --method "carrier_pigeon": use dns_txt, http_file or email'
+
+# attest signs HKr's statement. Off a terminal it needs
+# --statement-accepted, and shows the statement; --yes isn't enough.
+fake-hkr domain.attestation.get domain.attestation.ok setup.get.complete
+exits 2 hkr domains attest DomShop7Kq2X --name 'Ada Lovelace' --lang en --yes
+stderr '^  I have the owner''s authorization for these tests\.$'
+stderr 'pass --statement-accepted'
+
+exits 0 hkr domains attest DomShop7Kq2X --name 'Ada Lovelace' --lang en --statement-accepted
+stdout '^Attested shop\.example\.com|^Attested DomShop7Kq2X'
+stdout 'as Ada Lovelace\.$'
+stderr '^Next \(optional\): hkr schedules create shop\.example\.com'
+
+exits 2 hkr domains attest DomShop7Kq2X --statement-accepted
+stderr 'attest needs --name'
+
+fake-hkr domain.attestation.get domain.attestation.already_attested
+exits 1 hkr domains attest DomShop7Kq2X --name 'Ada Lovelace' --lang en --statement-accepted
+stderr 'already recorded'
+
+# limits shows, or sets, the defaults for its scans.
+fake-hkr domain.update.ok domain.update.invalid
+exits 0 hkr domains limits DomShop7Kq2X --preset deep_run --max-spend 60 --max-duration 4h
+stdout '^Scans of shop\.example\.com: deep_run, up to \$60\.00, up to 4h\.$'
+exits 1 hkr domains limits DomShop7Kq2X --preset huge
+stderr '^  preset_key: is invalid$'
+exits 2 hkr domains limits DomShop7Kq2X --max-duration soon
+stderr 'invalid --max-duration "soon"'
+
+fake-hkr domain.get.ok
+exits 0 hkr domains limits DomShop7Kq2X
+stdout '^Scans of shop\.example\.com: the preset''s limits\.$'

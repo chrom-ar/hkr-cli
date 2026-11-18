@@ -1,0 +1,35 @@
+# Code, for organization admins: repositories, push reviews, dependency
+# CVEs.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr repos.list.ok repo.get.ok repo.reviews.ok review.get.ok review.get.not_found
+exits 0 hkr repos list
+stdout '^ID            REPOSITORY  PROVIDER  REVIEW ON PUSH  FIX LEVEL$'
+stdout '^RepWeb7Kq2Xp  acme/web    github    no              critical$'
+
+# A repository is named by its full name or its id.
+exits 0 hkr repos show acme/web
+stdout '^acme/web  github, main, private$'
+stdout '^Watching  dependencies, fixing critical on its own$'
+
+exits 0 hkr reviews list acme/web
+stdout '^ID            STATUS     BRANCH  COMMIT        COMMENTS  SUMMARY$'
+stdout '^RevPush7Kq2X  completed  main    a3f21c9d8e7b  1         One SQL injection in the search handler\.$'
+
+exits 0 hkr reviews show RepWeb7Kq2Xp RevPush7Kq2X
+stdout '^Review of acme/web|^Review RevPush7Kq2X'
+stdout '^high  lib/search\.ex:42  SQL built from the query string$'
+stdout '^      Use a parameterised query\.$'
+
+exits 1 hkr reviews show RepWeb7Kq2Xp Nope7Kq2XpAb
+stderr 'That doesn''t exist'
+
+exits 2 hkr repos show nope/nope
+stderr 'no repository matches "nope/nope"; see hkr repos list'
+
+# Members can't: the admin hint.
+fake-hkr code.forbidden
+env HKR_TOKEN=hkrp_test_token_member
+exits 1 hkr repos list
+stderr '^error: Your role here doesn''t allow it\.$'
+stderr '^ask an admin of acme$'

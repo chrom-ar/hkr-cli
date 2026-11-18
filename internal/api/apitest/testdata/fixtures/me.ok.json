@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/me"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "organizations": [
+        {
+          "locale": "en",
+          "name": "Acme",
+          "role": "admin",
+          "slug": "acme"
+        },
+        {
+          "locale": "es",
+          "name": "Globex",
+          "role": "member",
+          "slug": "globex"
+        }
+      ],
+      "token": {
+        "access": "write",
+        "name": "laptop",
+        "organization": null,
+        "setup": false
+      },
+      "user": {
+        "email": "ada@example.com",
+        "id": "UsrAda7Kq2Xp",
+        "last_name": "Lovelace",
+        "name": "Ada"
+      }
+    }
+  }
+}

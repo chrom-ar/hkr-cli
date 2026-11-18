@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/verification/check"
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "no_challenge",
+        "message": "No check was started for this domain."
+      }
+    }
+  }
+}

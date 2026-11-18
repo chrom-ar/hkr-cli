@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/scans",
+    "query": {
+      "dry_run": "true"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "balance_usd": "5000.00",
+      "can_start": true,
+      "max_spend_usd": "300.00",
+      "partially_funded": false,
+      "start_floor_usd": "41.08"
+    }
+  }
+}

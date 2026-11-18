@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/fixes/FixWeb7Kq2Xp"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "created_at": "2026-11-18T12:00:00Z",
+      "finding_id": "FndHigh7Kq2X",
+      "finished_at": null,
+      "id": "FixWeb7Kq2Xp",
+      "pull_request": null,
+      "repository": {
+        "full_name": "acme/web",
+        "id": "RepWeb7Kq2Xp"
+      },
+      "started_at": "2026-11-18T12:00:00Z",
+      "status": "running",
+      "unverified_reason": null
+    }
+  }
+}

@@ -1,0 +1,29 @@
+# hkr findings evidence: list the files, download them. Storage answers
+# without the token.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr --storage request.txt finding.evidence.ok finding.evidence.file
+exits 0 hkr findings evidence FndHigh7Kq2X
+stdout '^PATH                 SCAN  SIZE$'
+stdout '^F-01/request\.txt     1     1\.8 KB$'
+stdout '^F-01/screenshot\.png  1     20\.0 KB$'
+
+# A path downloads it, keeping its folders, under -o (default here).
+exits 0 hkr findings evidence FndHigh7Kq2X F-01/request.txt -o out
+cmp out/F-01/request.txt request.txt
+stderr '^Saved out/F-01/request\.txt$'
+
+# -o - writes one file to stdout.
+exits 0 hkr findings evidence FndHigh7Kq2X F-01/request.txt -o -
+cmp stdout request.txt
+
+# Nothing is overwritten.
+exits 1 hkr findings evidence FndHigh7Kq2X F-01/request.txt -o out
+stderr 'out/F-01/request\.txt already exists'
+
+exits 1 hkr findings evidence FndHigh7Kq2X nope.txt
+stderr '^error: FndHigh7Kq2X has no evidence file nope\.txt$'
+
+-- request.txt --
+GET /orders/2 HTTP/1.1
+Host: api.shop.example.com

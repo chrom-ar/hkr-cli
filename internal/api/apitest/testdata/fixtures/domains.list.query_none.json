@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/domains",
+    "query": {
+      "q": "nowhere.example"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [],
+      "next_cursor": null
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/findings/FndLow8Mn3Yq/fixes"
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "no_repository",
+        "message": "This finding is not attached to a host."
+      }
+    }
+  }
+}

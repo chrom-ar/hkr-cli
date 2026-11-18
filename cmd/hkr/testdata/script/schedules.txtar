@@ -1,0 +1,41 @@
+# hkr schedules: recurring scans of a domain. Creating, resuming and
+# deleting need a setup token, and ask first: they spend unattended.
+env HKR_TOKEN=hkrp_test_token_setup
+env HKR_ORG=acme
+fake-hkr schedules.list.ok schedules.list.empty schedule.create.ok schedule.pause.ok schedule.resume.ok schedule.delete.ok setup.get.complete
+exits 0 hkr schedules list DomShop7Kq2X
+stdout '^ID            EVERY       AT     NEXT               LIMITS        STATUS$'
+stdout '^SchWeek7Kq2X  week \(mon\)  03:00  18 Nov 2026 12:00  up to \$60\.00  active$'
+stderr '^Times are in America/Argentina/Buenos_Aires\.$'
+
+exits 2 hkr schedules create DomShop7Kq2X --every week --weekday mon --at 03:00 --preset first_look --max-spend 60
+stderr 'a schedule spends credit unattended: pass --yes'
+
+exits 0 hkr schedules create DomShop7Kq2X --every week --weekday mon --at 03:00 --preset first_look --max-spend 60 --yes
+stdout '^Scheduled SchWeek7Kq2X: every week on mon at 03:00 \(America/Argentina/Buenos_Aires\), next 18 Nov 2026 12:00\.$'
+stderr '^Next \(optional\): '
+
+# Caught before asking HKr.
+exits 2 hkr schedules create DomShop7Kq2X --every week --at 3pm --yes
+stderr 'invalid --at "3pm": like 03:00'
+exits 2 hkr schedules create DomShop7Kq2X --every week --at 03:00 --yes
+stderr '--every week needs --weekday'
+exits 2 hkr schedules create DomShop7Kq2X --every fortnight --at 03:00 --yes
+stderr 'unknown --every "fortnight": use day, week or month'
+exits 2 hkr schedules create DomShop7Kq2X --once 2026-12-01 --yes
+stderr 'invalid --once "2026-12-01": a time with its zone, like 2026-12-01T06:00:00Z'
+
+exits 0 hkr schedules pause DomShop7Kq2X SchWeek7Kq2X
+stdout '^Paused SchWeek7Kq2X\.$'
+
+exits 2 hkr schedules resume DomShop7Kq2X SchWeek7Kq2X
+stderr 'pass --yes'
+exits 0 hkr schedules resume DomShop7Kq2X SchWeek7Kq2X --yes
+stdout '^Resumed SchWeek7Kq2X: next 18 Nov 2026 12:00\.$'
+
+exits 0 hkr schedules delete DomShop7Kq2X SchWeek7Kq2X --yes
+stdout '^Deleted SchWeek7Kq2X\.$'
+
+# A delete answers nothing: --json prints nothing.
+exits 0 hkr schedules delete DomShop7Kq2X SchWeek7Kq2X --yes --json
+! stdout .

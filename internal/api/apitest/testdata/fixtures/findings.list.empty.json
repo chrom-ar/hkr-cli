@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/findings",
+    "query": {
+      "state": "accepted"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [],
+      "next_cursor": null
+    }
+  }
+}

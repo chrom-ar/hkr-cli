@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/dependencies/ExpLoda7Kq2X/dismiss"
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "not_dismissable",
+        "message": "Only an open dependency CVE can be dismissed."
+      }
+    }
+  }
+}

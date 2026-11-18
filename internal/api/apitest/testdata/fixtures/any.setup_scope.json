@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/orgs/acme/repos/RepWeb7Kq2Xp",
+    "body": {
+      "fix_level": "high"
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": {
+      "error": {
+        "code": "setup_scope",
+        "message": "This token can't change setup. Make one with setup changes on."
+      }
+    }
+  }
+}

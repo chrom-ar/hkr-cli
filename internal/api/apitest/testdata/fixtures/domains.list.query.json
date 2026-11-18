@@ -1,0 +1,40 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/domains",
+    "query": {
+      "q": "shop"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "archived": false,
+          "attested": false,
+          "created_at": "2026-11-18T12:00:00Z",
+          "id": "DomShop7Kq2X",
+          "last_scan": null,
+          "max_duration_seconds": null,
+          "max_spend_usd": null,
+          "name": "Shop",
+          "open_findings": {
+            "critical": 0,
+            "high": 1,
+            "informational": 0,
+            "low": 1,
+            "medium": 0
+          },
+          "preset_key": null,
+          "root_domain": "shop.example.com",
+          "scope_breadth": "domain",
+          "status": "draft",
+          "url": "http://hkr.test/domains/DomShop7Kq2X",
+          "verified": false
+        }
+      ],
+      "next_cursor": null
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# hkr login --setup asks HKr to pre-set the "Setup changes" toggle; the
+# person decides on the page. whoami says whether the token has it.
+fake-hkr login.device.setup login.token.ok me.setup
+exits 0 hkr login --setup
+stdout '^Signed in to http://127\.0\.0\.1:\d+ as ada@example\.com \(token "agent", write access, setup changes\)\.$'
+
+env HKR_URL=
+exits 0 hkr whoami
+stdout '^Token "agent": write access, setup changes$'

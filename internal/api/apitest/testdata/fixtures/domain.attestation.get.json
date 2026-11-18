@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/attestation",
+    "headers": {
+      "Accept-Language": "en"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "attested": false,
+      "attested_at": null,
+      "attested_by_name": null,
+      "statement": "I have the owner's authorization for these tests."
+    }
+  }
+}

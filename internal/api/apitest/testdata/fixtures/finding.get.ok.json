@@ -1,0 +1,43 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "accepted": null,
+      "affected": "https://api.shop.example.com/orders/:id",
+      "class": "idor",
+      "confirmed_at": "2026-11-18T12:00:00Z",
+      "cvss_score": 7.5,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+      "domain": {
+        "id": "DomShop7Kq2X",
+        "name": "Shop",
+        "root_domain": "shop.example.com"
+      },
+      "first_seen_at": "2026-11-18T12:00:00Z",
+      "first_seen_scan": null,
+      "fix_lives_in": null,
+      "id": "FndHigh7Kq2X",
+      "impact": "Names, addresses and order contents of every customer.",
+      "last_seen_scan": null,
+      "locale": null,
+      "ref": "F-01",
+      "remediation": "Check that the order belongs to the signed-in customer.",
+      "reproduction": "1. Sign in as customer A.\n2. GET /orders/<an id of customer B>.",
+      "severity": "high",
+      "severity_justification": null,
+      "source": "scan",
+      "state": "open",
+      "status": "confirmed",
+      "suggested_fixed": null,
+      "summary": "Any signed-in customer can read any order by changing its id.",
+      "target": "api.shop.example.com",
+      "title": "Orders of other customers readable by id",
+      "updated_at": "2026-11-18T12:00:00Z",
+      "url": "http://hkr.test/findings/FndHigh7Kq2X"
+    }
+  }
+}

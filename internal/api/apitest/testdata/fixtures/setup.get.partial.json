@@ -1,0 +1,150 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/setup"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "complete": false,
+      "next": {
+        "blocked_by": [],
+        "can_act": true,
+        "detail": {
+          "challenge": null
+        },
+        "domain": {
+          "id": "DomShop7Kq2X",
+          "root_domain": "shop.example.com"
+        },
+        "done": false,
+        "key": "verify",
+        "minutes": 5,
+        "optional": false,
+        "url": "http://hkr.test/domains/DomShop7Kq2X"
+      },
+      "steps": [
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "domains": 1
+          },
+          "domain": null,
+          "done": true,
+          "key": "domain",
+          "minutes": 0.5,
+          "optional": false,
+          "url": "http://hkr.test/domains/new"
+        },
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "challenge": null
+          },
+          "domain": {
+            "id": "DomShop7Kq2X",
+            "root_domain": "shop.example.com"
+          },
+          "done": false,
+          "key": "verify",
+          "minutes": 5,
+          "optional": false,
+          "url": "http://hkr.test/domains/DomShop7Kq2X"
+        },
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "statement": "I have the owner's authorization for these tests."
+          },
+          "domain": {
+            "id": "DomShop7Kq2X",
+            "root_domain": "shop.example.com"
+          },
+          "done": false,
+          "key": "authorize",
+          "minutes": 0.5,
+          "optional": false,
+          "url": "http://hkr.test/domains/DomShop7Kq2X"
+        },
+        {
+          "blocked_by": [
+            "verify",
+            "authorize"
+          ],
+          "can_act": true,
+          "detail": {
+            "active_scan": null,
+            "balance_usd": "5000.00",
+            "billing_url": null,
+            "estimate_usd": "41.08",
+            "funded": true
+          },
+          "domain": {
+            "id": "DomShop7Kq2X",
+            "root_domain": "shop.example.com"
+          },
+          "done": false,
+          "key": "launch",
+          "minutes": 0,
+          "optional": false,
+          "url": "http://hkr.test/domains/DomShop7Kq2X"
+        },
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "connections": [
+              {
+                "name": "acme",
+                "provider": "github"
+              }
+            ]
+          },
+          "domain": null,
+          "done": true,
+          "key": "git_host",
+          "minutes": 2,
+          "optional": true,
+          "url": "http://hkr.test/code"
+        },
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "confirmed": 1,
+            "proposed": 0,
+            "state": "linked"
+          },
+          "domain": {
+            "id": "DomShop7Kq2X",
+            "root_domain": "shop.example.com"
+          },
+          "done": true,
+          "key": "link",
+          "minutes": 1,
+          "optional": true,
+          "url": "http://hkr.test/code"
+        },
+        {
+          "blocked_by": [],
+          "can_act": true,
+          "detail": {
+            "schedules": 0
+          },
+          "domain": {
+            "id": "DomShop7Kq2X",
+            "root_domain": "shop.example.com"
+          },
+          "done": false,
+          "key": "schedule",
+          "minutes": 1,
+          "optional": true,
+          "url": "http://hkr.test/domains/DomShop7Kq2X"
+        }
+      ]
+    }
+  }
+}

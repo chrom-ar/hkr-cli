@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/scans"
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "run_already_active",
+        "message": "A scan is already running on this domain."
+      }
+    }
+  }
+}

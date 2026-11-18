@@ -1,0 +1,31 @@
+# hkr scans list and show: a domain's scans, by number.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr scans.list.ok scan.get.ok scan.get.latest scan.steps.ok scan.steps.next scan.get.not_found
+exits 0 hkr scans list DomShop7Kq2X
+stdout '^SCAN  STATUS   PRESET      COST   STARTED            FINDINGS$'
+stdout '^1     running  first_look  \$0\.00  18 Nov 2026 12:00  0 new, 0 seen$'
+
+# show: the latest by default, with its timeline.
+exits 0 hkr scans show DomShop7Kq2X
+stdout '^Scan 1 of DomShop7Kq2X: running$'
+stdout '^Limits    first_look, up to \$300\.00$'
+stdout '^Cost      \$0\.00$'
+stdout '^Asked     Orders first\.$'
+stdout '^URL       http://127\.0\.0\.1:\d+/domains/DomShop7Kq2X/scans/1$'
+stdout '^TIMELINE$'
+stdout '^12:00  Mapped the orders API$'
+stdout '^12:00  Read another customer''s order$'
+
+exits 0 hkr scans show DomShop7Kq2X 1 --json
+stdout '"number": 1'
+
+exits 1 hkr scans show DomShop7Kq2X 9
+stderr 'That doesn''t exist'
+
+exits 2 hkr scans show DomShop7Kq2X third
+stderr 'scan number "third": expected a number, like 3'
+
+fake-hkr scans.list.empty
+exits 0 hkr scans list DomShop7Kq2X
+stdout '^No scans yet\. Start one: hkr scans start DomShop7Kq2X$'

@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X/fixes",
+    "query": {
+      "dry_run": "true"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "balance_usd": "5000.00",
+      "can_start": true,
+      "estimate_usd": "10.10"
+    }
+  }
+}

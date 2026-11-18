@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X",
+    "body": {
+      "preset_key": "huge"
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "invalid",
+        "fields": {
+          "preset_key": [
+            "is invalid"
+          ]
+        },
+        "message": "Some values aren't valid."
+      }
+    }
+  }
+}

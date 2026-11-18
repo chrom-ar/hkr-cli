@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X/reopen"
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "not_accepted",
+        "message": "This finding isn't accepted."
+      }
+    }
+  }
+}

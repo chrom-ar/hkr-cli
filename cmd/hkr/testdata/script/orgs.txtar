@@ -1,0 +1,16 @@
+# hkr orgs list: your organizations and your role in each.
+env HKR_TOKEN=hkrp_test_token_laptop
+fake-hkr orgs.list.ok
+exits 0 hkr orgs list
+stdout '^SLUG    NAME    ROLE    OPEN  LANGUAGE$'
+stdout '^acme    Acme    admin   1     en$'
+stdout '^globex  Globex  member  0     es$'
+! stderr .
+
+exits 0 hkr orgs list --json
+stdout '"slug": "acme"'
+stdout '"next_cursor": null'
+
+# orgs alone needs an action.
+exits 2 hkr orgs
+stderr 'orgs needs an action: list'

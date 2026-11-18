@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/schedules",
+    "body": {
+      "period": "week",
+      "time": "25:00",
+      "weekday": "mon"
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "invalid",
+        "fields": {
+          "hour": [
+            "can't be blank"
+          ],
+          "time": [
+            "is not a time"
+          ]
+        },
+        "message": "Some values aren't valid."
+      }
+    }
+  }
+}

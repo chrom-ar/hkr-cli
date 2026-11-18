@@ -1,0 +1,62 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/findings"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [
+        {
+          "class": "idor",
+          "confirmed_at": "2026-11-18T12:00:00Z",
+          "cvss_score": 7.5,
+          "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:N/A:N",
+          "domain": {
+            "id": "DomShop7Kq2X",
+            "name": "Shop",
+            "root_domain": "shop.example.com"
+          },
+          "first_seen_at": "2026-11-18T12:00:00Z",
+          "fix_lives_in": null,
+          "id": "FndHigh7Kq2X",
+          "ref": "F-01",
+          "severity": "high",
+          "source": "scan",
+          "state": "open",
+          "status": "confirmed",
+          "suggested_fixed": null,
+          "target": "api.shop.example.com",
+          "title": "Orders of other customers readable by id",
+          "updated_at": "2026-11-18T12:00:00Z",
+          "url": "http://hkr.test/findings/FndHigh7Kq2X"
+        },
+        {
+          "class": "xss-reflected",
+          "confirmed_at": "2026-11-18T12:00:00Z",
+          "cvss_score": null,
+          "cvss_vector": null,
+          "domain": {
+            "id": "DomShop7Kq2X",
+            "name": "Shop",
+            "root_domain": "shop.example.com"
+          },
+          "first_seen_at": "2026-11-18T12:00:00Z",
+          "fix_lives_in": null,
+          "id": "FndLow8Mn3Yq",
+          "ref": "F-02",
+          "severity": "low",
+          "source": "scan",
+          "state": "open",
+          "status": "confirmed",
+          "suggested_fixed": null,
+          "target": null,
+          "title": "Reflected XSS in search",
+          "updated_at": "2026-11-18T12:00:00Z",
+          "url": "http://hkr.test/findings/FndLow8Mn3Yq"
+        }
+      ],
+      "next_cursor": null
+    }
+  }
+}

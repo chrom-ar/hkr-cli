@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/scans"
+  },
+  "response": {
+    "status": 402,
+    "body": {
+      "error": {
+        "code": "insufficient_balance",
+        "message": "There isn't enough credit to start a scan. Add credit in Billing."
+      }
+    }
+  }
+}

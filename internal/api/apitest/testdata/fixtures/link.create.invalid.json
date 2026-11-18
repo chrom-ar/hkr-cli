@@ -1,0 +1,28 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/links",
+    "body": {
+      "kind": "deploys",
+      "repo": "acme/nope",
+      "target": "nowhere.example"
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "invalid",
+        "fields": {
+          "repo": [
+            "isn't a repository HKr can see here"
+          ],
+          "target": [
+            "isn't one of your domains' hosts in scope"
+          ]
+        },
+        "message": "Some values aren't valid."
+      }
+    }
+  }
+}

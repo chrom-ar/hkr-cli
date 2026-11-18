@@ -1,0 +1,6 @@
+# hkr guide: how to set HKr up, for a person or their agent. Offline.
+exits 0 hkr guide
+stdout '^# Setting HKr up$'
+stdout 'hkr status --json'
+stdout 'hkr login --setup'
+! stderr .

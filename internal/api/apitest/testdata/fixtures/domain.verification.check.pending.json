@@ -1,0 +1,25 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/verification/check"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "challenge": {
+        "domain": "shop.example.com",
+        "expires_at": "2026-11-18T12:00:00Z",
+        "last_checked_at": "2026-11-18T12:00:00Z",
+        "last_error": "record_not_found",
+        "method": "dns_txt",
+        "record": {
+          "name": "_hkr-challenge.shop.example.com",
+          "type": "TXT",
+          "value": "hkr-verify=test_challenge_token"
+        },
+        "status": "pending"
+      },
+      "verified": false
+    }
+  }
+}

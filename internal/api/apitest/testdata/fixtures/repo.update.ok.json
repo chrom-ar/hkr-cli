@@ -1,0 +1,45 @@
+{
+  "request": {
+    "method": "PATCH",
+    "path": "/api/v1/orgs/acme/repos/RepWeb7Kq2Xp",
+    "body": {
+      "fix_level": "high",
+      "review_branches": [
+        "main",
+        "release/*"
+      ],
+      "review_min_minutes": 10,
+      "review_on_push": true,
+      "review_paths": [
+        "lib/**"
+      ],
+      "watch_dependencies": true
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "archived": false,
+      "default_branch": "main",
+      "fix_level": "high",
+      "full_name": "acme/web",
+      "id": "RepWeb7Kq2Xp",
+      "last_synced_at": "2026-11-18T12:00:00Z",
+      "private": true,
+      "provider": "github",
+      "push_hook": "ok",
+      "review_branches": [
+        "main",
+        "release/*"
+      ],
+      "review_min_minutes": 10,
+      "review_on_push": true,
+      "review_paths": [
+        "lib/**"
+      ],
+      "reviewed_at": "2026-11-18T12:00:00Z",
+      "url": "http://hkr.test/code/RepWeb7Kq2Xp",
+      "watch_dependencies": true
+    }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/dependencies/ExpLoda7Kq2X"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "advisory": {
+        "cve_id": "CVE-2026-6100",
+        "cvss_score": null,
+        "id": "AdvLoda7Kq2X",
+        "osv_id": "GHSA-2026-6100",
+        "published_at": null,
+        "severity": "high",
+        "summary": "Prototype pollution in lodash"
+      },
+      "created_at": "2026-11-18T12:00:00Z",
+      "ecosystem": "npm",
+      "fix": null,
+      "fixed_version": "4.17.21",
+      "id": "ExpLoda7Kq2X",
+      "match_confidence": "ranged",
+      "matched_version": "4.17.20",
+      "merge_undone": false,
+      "package_name": "lodash",
+      "path": ".",
+      "repository": {
+        "full_name": "acme/web",
+        "id": "RepWeb7Kq2Xp"
+      },
+      "resolved_at": null,
+      "scope": "runtime",
+      "status": "open",
+      "urgent": false
+    }
+  }
+}

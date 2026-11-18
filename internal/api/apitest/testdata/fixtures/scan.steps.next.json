@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/scans/1/steps",
+    "query": {
+      "cursor": "cursor_test_after_idor"
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "data": [],
+      "next_cursor": "cursor_test_after_idor"
+    }
+  }
+}

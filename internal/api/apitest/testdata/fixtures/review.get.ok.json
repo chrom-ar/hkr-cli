@@ -1,0 +1,35 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/repos/RepWeb7Kq2Xp/reviews/RevPush7Kq2X"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "branch": "main",
+      "comments": [
+        {
+          "body": "Use a parameterised query.",
+          "class": "sqli",
+          "finding_id": null,
+          "line": 42,
+          "path": "lib/search.ex",
+          "posted_at": null,
+          "severity": "high",
+          "title": "SQL built from the query string"
+        }
+      ],
+      "commit_sha": "a3f21c9d8e7b6a5f4c3d2e1b0a9f8e7d6c5b4a39",
+      "created_at": "2026-11-18T12:00:00Z",
+      "finished_at": "2026-11-18T12:00:00Z",
+      "id": "RevPush7Kq2X",
+      "pull_request_number": null,
+      "reason": null,
+      "repository_id": "RepWeb7Kq2Xp",
+      "started_at": "2026-11-18T12:00:00Z",
+      "status": "completed",
+      "summary": "One SQL injection in the search handler.",
+      "url": "http://hkr.test/code/RepWeb7Kq2Xp/reviews/RevPush7Kq2X"
+    }
+  }
+}

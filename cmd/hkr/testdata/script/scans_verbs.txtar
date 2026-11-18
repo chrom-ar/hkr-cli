@@ -1,0 +1,25 @@
+# Steering, winding down, stopping and resuming a scan.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr scan.get.latest scan.steer.ok scan.steer.terminal scan.wind_down.ok scan.stop.ok scan.resume.ok
+exits 0 hkr scans steer DomShop7Kq2X 1 'Look at the admin panel next.'
+stdout '^Sent to scan 1 of DomShop7Kq2X\.$'
+
+# Without a number, the latest.
+exits 1 hkr scans steer DomShop7Kq2X 'Look at the admin panel next.'
+stderr '^error: This scan has finished\.$'
+
+exits 2 hkr scans steer DomShop7Kq2X 1 ''
+stderr 'steer needs a message'
+
+exits 0 hkr scans wind-down DomShop7Kq2X 1
+stdout '^Scan 1 of DomShop7Kq2X is winding down: it finishes what it''s on and writes it up\.$'
+
+# stop loses work in progress: it asks, or --yes.
+exits 2 hkr scans stop DomShop7Kq2X 1
+stderr 'pass --yes to stop it without a terminal'
+exits 0 hkr scans stop DomShop7Kq2X 1 --yes
+stdout '^Scan 1 of DomShop7Kq2X is stopping\.$'
+
+exits 0 hkr scans resume DomShop7Kq2X 1 --yes
+stdout '^Scan 1 of DomShop7Kq2X is starting again\.$'

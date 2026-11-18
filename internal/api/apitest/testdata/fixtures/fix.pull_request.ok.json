@@ -1,0 +1,27 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/fixes/FixWeb7Kq2Xp/pull-request"
+  },
+  "response": {
+    "status": 201,
+    "body": {
+      "created_at": "2026-11-18T12:00:00Z",
+      "finding_id": "FndHigh7Kq2X",
+      "finished_at": null,
+      "id": "FixWeb7Kq2Xp",
+      "pull_request": {
+        "number": 12,
+        "state": "open",
+        "url": "https://github.com/acme/web/pull/12"
+      },
+      "repository": {
+        "full_name": "acme/web",
+        "id": "RepWeb7Kq2Xp"
+      },
+      "started_at": null,
+      "status": "verified",
+      "unverified_reason": null
+    }
+  }
+}

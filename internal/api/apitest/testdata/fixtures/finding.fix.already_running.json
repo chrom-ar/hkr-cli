@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X/fixes"
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "fix_already_running",
+        "message": "A fix for this finding is already running."
+      }
+    }
+  }
+}

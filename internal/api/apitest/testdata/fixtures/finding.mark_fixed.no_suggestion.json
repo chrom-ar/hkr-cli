@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/findings/FndHigh7Kq2X/mark-fixed"
+  },
+  "response": {
+    "status": 409,
+    "body": {
+      "error": {
+        "code": "no_suggestion",
+        "message": "HKr hasn't suggested that this finding is fixed."
+      }
+    }
+  }
+}

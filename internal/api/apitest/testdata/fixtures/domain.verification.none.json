@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/verification"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "challenge": null,
+      "verified": false
+    }
+  }
+}

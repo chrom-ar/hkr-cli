@@ -1,0 +1,32 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/links/LnkNew7Kq2Xp/confirm"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "confidence": null,
+      "created_at": "2026-11-18T12:00:00Z",
+      "decided_by": {
+        "id": "UsrAda7Kq2Xp",
+        "last_name": "Lovelace",
+        "name": "Ada"
+      },
+      "id": "LnkNew7Kq2Xp",
+      "kind": "defines",
+      "ref": "",
+      "repository": {
+        "full_name": "acme/web",
+        "id": "RepWeb7Kq2Xp"
+      },
+      "source": "human",
+      "status": "confirmed",
+      "target": {
+        "domain_id": "DomShop7Kq2X",
+        "id": "TgtRoot7Kq2X",
+        "value": "shop.example.com"
+      }
+    }
+  }
+}
