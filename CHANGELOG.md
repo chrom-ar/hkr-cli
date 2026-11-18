@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.0.1
 
 - `hkr login` signs in by approving a code in the browser; the token is
   kept in the system keychain, or a file only you can read. `hkr logout`
