@@ -29,4 +29,4 @@ stderr 'nothing to change'
 fake-hkr repo.update.setup_scope
 env HKR_TOKEN=hkrp_test_token_laptop
 exits 3 hkr repos set RepWeb7Kq2Xp --fix-level high --yes
-stderr '^this token can''t change setup: run hkr login --setup$'
+stderr '^this token can''t change setup: run hkr login and keep Setup changes on$'

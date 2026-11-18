@@ -21,7 +21,7 @@ func TestSetupScopeIsAnAuthError(t *testing.T) {
 	var stderr bytes.Buffer
 	a := &app{env: withDefaults(Env{Stderr: &stderr})}
 	a.reportError(err)
-	if !strings.Contains(stderr.String(), "this token can't change setup: run hkr login --setup\n") {
+	if !strings.Contains(stderr.String(), "this token can't change setup: run hkr login and keep Setup changes on\n") {
 		t.Errorf("stderr = %q", stderr.String())
 	}
 }

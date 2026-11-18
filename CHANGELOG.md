@@ -2,6 +2,12 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
+## Unreleased
+
+- `hkr login` no longer needs `--setup`: HKr's approval page starts with
+  setup changes on, and you narrow the token there. The flag still works,
+  and does nothing.
+
 ## 0.1.0
 
 - `hkr` is on Homebrew (`brew install chrom-ar/tap/hkr`) and in Chroma's

@@ -91,7 +91,10 @@ func newLoginCmd(a *app) *cobra.Command {
 		},
 	}
 	c.Flags().BoolVar(&noBrowser, "no-browser", false, "print the URL without opening a browser")
-	c.Flags().BoolVar(&setup, "setup", false, "ask for a token that may change setup: schedules, repository settings, links (you decide on the page)")
+	// HKr pre-sets "Setup changes" on every login now; kept for scripts
+	// that still pass it.
+	c.Flags().BoolVar(&setup, "setup", false, "no effect: setup changes are on by default")
+	_ = c.Flags().MarkHidden("setup")
 	return c
 }
 

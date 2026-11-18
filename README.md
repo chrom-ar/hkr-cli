@@ -38,7 +38,6 @@ for macOS, Linux and Windows on amd64 and arm64:
 
 ```sh
 hkr login            # approve the code in the browser
-hkr login --setup    # a token that may also change setup (see below)
 hkr whoami
 hkr logout           # revokes this machine's token and forgets it
 ```
@@ -46,6 +45,7 @@ hkr logout           # revokes this machine's token and forgets it
 When you approve, you choose the token's toggles: **read only**, **only
 your current organization**, and **setup changes** (schedules,
 repository settings and links, which can make HKr spend on its own).
+The page starts at the broadest: setup changes on, every organization.
 The token is kept in the system keychain, or a file only you can read.
 For a local HKr, `--url http://localhost:4000`.
 
@@ -152,7 +152,7 @@ claude "Fix the vulnerability in finding.md. Then run: hkr scans start shop.exam
   --json`, run the next step, `hkr status --check` until it exits 0) and
   what only the person can do (approve the login, connect a git host,
   sign the attestation, buy credit, agree to spend).
-- Set up with `hkr login --setup`; day to day, give the agent a
+- Set up with `hkr login`; day to day, give the agent a
   read-only token, or one narrowed to the organization, through
   `HKR_TOKEN`.
 - `--json` on any command prints HKr's JSON as is; `scans follow --json`

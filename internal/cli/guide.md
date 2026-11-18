@@ -20,7 +20,7 @@ recurring scans possible; they never block it.
 ## Signing in
 
 ```sh
-hkr login --setup           # opens HKr in the browser; the person approves
+hkr login                   # opens HKr in the browser; the person approves
 hkr whoami
 ```
 
@@ -32,7 +32,7 @@ toggles:
   narrows to the organization selected in the web app, so switch to the
   right one there first.
 - **Setup changes**: schedules, repository settings and links; HKr may
-  spend on its own. `--setup` pre-sets it; the person decides.
+  spend on its own. It's on by default; the person decides.
 
 Set up with a token that has setup changes; day to day, use a read-only
 one, or one narrowed to the organization, through `HKR_TOKEN`.

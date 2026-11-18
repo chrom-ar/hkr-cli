@@ -119,7 +119,7 @@ func (a *app) hint(err error) string {
 	case errors.Is(err, api.ErrUnauthorized), errors.As(err, new(authError)):
 		return "run: hkr login"
 	case errors.As(err, &apiErr) && apiErr.Code == "setup_scope":
-		return "this token can't change setup: run hkr login --setup"
+		return "this token can't change setup: run hkr login and keep Setup changes on"
 	case errors.Is(err, api.ErrReadOnly):
 		return "this token is read-only; create one with write access, or run: hkr login"
 	case errors.Is(err, target.ErrAmbiguous):

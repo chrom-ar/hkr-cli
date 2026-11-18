@@ -106,7 +106,7 @@ func newReposSetCmd(a *app) *cobra.Command {
 			"fix level, the lowest severity HKr fixes dependency CVEs at on its own.\n" +
 			"Reviews on push and a fix level other than off let HKr spend: they\n" +
 			"ask, or take --yes.\n" +
-			"Needs a token with setup changes (hkr login --setup).",
+			"Needs a token with setup changes (on by default in hkr login).",
 		Example: "  hkr repos set acme/web --review-on-push on --branches main\n" +
 			"  hkr repos set acme/web --watch-deps on --fix-level critical --yes",
 		Args: argsBetween(1, 1),
