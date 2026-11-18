@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.1.1
 
 - `hkr login` no longer needs `--setup`: HKr's approval page starts with
   setup changes on, and you narrow the token there. The flag still works,
