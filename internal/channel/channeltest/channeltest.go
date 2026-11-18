@@ -176,7 +176,8 @@ func (s *Server) answer(ws *websocket.Conn, f Frame) {
 		if response == nil {
 			response = map[string]any{}
 		}
-		_ = send(ws, f.JoinRef, f.Ref, f.Topic, "phx_reply", map[string]any{"status": reply.Status, "response": response})
+		// Recorded before the reply: a test acting as soon as Join returns
+		// must find the join.
 		if reply.Status == "ok" {
 			s.mu.Lock()
 			s.joins = append(s.joins, join{topic: f.Topic, joinRef: f.JoinRef, ws: ws})
@@ -184,6 +185,7 @@ func (s *Server) answer(ws *websocket.Conn, f Frame) {
 			s.joined = make(chan struct{})
 			s.mu.Unlock()
 		}
+		_ = send(ws, f.JoinRef, f.Ref, f.Topic, "phx_reply", map[string]any{"status": reply.Status, "response": response})
 	}
 }
 
