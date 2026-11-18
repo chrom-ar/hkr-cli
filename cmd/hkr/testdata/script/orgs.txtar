@@ -2,9 +2,9 @@
 env HKR_TOKEN=hkrp_test_token_laptop
 fake-hkr orgs.list.ok
 exits 0 hkr orgs list
-stdout '^SLUG    NAME    ROLE    OPEN  LANGUAGE$'
-stdout '^acme    Acme    admin   1     en$'
-stdout '^globex  Globex  member  0     es$'
+stdout '^SLUG    NAME    ROLE    OPEN CRITICAL/HIGH  LANGUAGE$'
+stdout '^acme    Acme    admin   1                   en$'
+stdout '^globex  Globex  member  0                   es$'
 ! stderr .
 
 exits 0 hkr orgs list --json

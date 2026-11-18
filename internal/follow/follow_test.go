@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"runtime"
 	"slices"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -381,5 +382,22 @@ func TestStopDuringBackoff(t *testing.T) {
 	out.cancel()
 	if _, err := out.result(); !errors.Is(err, context.Canceled) {
 		t.Fatalf("err = %v", err)
+	}
+}
+
+// Terms the person hasn't accepted end it too, saying so.
+func TestAccessLostToTermsSaysSo(t *testing.T) {
+	noLeaks(t)
+	srv := channeltest.New(t, channeltest.Options{Token: token})
+	out := start(t, srv.URL, &rest{scan: running(), next: map[string]string{"": "c1"}}, nil)
+	waitJoins(t, srv, 1)
+	push(t, srv, "access_lost", map[string]any{"error": map[string]any{"code": "terms_not_accepted"}})
+	_, err := out.result()
+	var lost *follow.AccessLostError
+	if !errors.As(err, &lost) || lost.Code != "terms_not_accepted" {
+		t.Fatalf("err = %v", err)
+	}
+	if errors.Is(err, api.ErrNotFound) || !strings.Contains(err.Error(), "terms") {
+		t.Errorf("err = %q, want it about the terms, not the scan's reach", err)
 	}
 }

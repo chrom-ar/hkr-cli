@@ -50,7 +50,7 @@
               "record": {
                 "name": "_hkr-challenge.shop.example.com",
                 "type": "TXT",
-                "value": "hkr-verify=fixture-68418"
+                "value": "hkr-verify=fixture-challenge"
               },
               "status": "verified"
             }

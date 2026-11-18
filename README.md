@@ -183,8 +183,9 @@ claude "Fix the vulnerability in finding.md. Then run: hkr scans start shop.exam
 
 `0` done; `1` HKr refused or failed (not found, not allowed, validation,
 network); `2` a usage mistake; `3` not signed in, a rejected or revoked
-token, or a token without the access asked for (read-only, or without
-setup changes); `4` (`scans follow`, and `scans start --follow`) the scan
+token, a token without the access asked for (read-only, or without
+setup changes), or HKr's terms not accepted yet (accept them in the web
+app; `hkr` never does); `4` (`scans follow`, and `scans start --follow`) the scan
 failed or was cancelled, or `--fail-on` matched.
 
 ## Development

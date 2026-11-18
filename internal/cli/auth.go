@@ -56,7 +56,10 @@ func newLoginCmd(a *app) *cobra.Command {
 			}
 			previous, _ := store.Get(s.url)
 			me, _, err := c.Me(ctx)
-			if err == nil {
+			terms, termsErr := termsNotAccepted(err), err
+			if err == nil || terms {
+				// Unaccepted terms don't make the token bad: keep it, so
+				// accepting them in the browser is all that's left.
 				err = store.Set(s.url, grant.Token)
 			}
 			if err == nil {
@@ -74,6 +77,9 @@ func newLoginCmd(a *app) *cobra.Command {
 				if old, err := a.newClient(s.url, previous, s.lang); err == nil {
 					_ = old.RevokeToken(ctx)
 				}
+			}
+			if terms {
+				return termsErr
 			}
 			a.out("Signed in to %s as %s (token %q, %s).", s.url, render.Safe(cmpOr(me.User.Email, grant.User.Email)),
 				render.Safe(me.Token.Name), accessText(me.Token))

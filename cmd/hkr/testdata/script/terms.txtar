@@ -1,0 +1,19 @@
+# HKr refuses everything until the person accepts its terms, in the web
+# app. hkr says where, exits 3 and never accepts for them.
+env HKR_TOKEN=hkrp_test_token_laptop
+fake-hkr me.terms_not_accepted
+exits 3 hkr whoami
+stderr '^error: Accept HKr''s terms in the web app first: http://127\.0\.0\.1:\d+/terms/accept$'
+stderr '^only you can accept them, in a browser; then run this again$'
+! stdout .
+
+exits 3 hkr whoami --json
+stderr '^\{"error":\{"code":"terms_not_accepted","message":"Accept HKr''s terms in the web app first: http://127\.0\.0\.1:\d+/terms/accept","url":"http://127\.0\.0\.1:\d+/terms/accept"\}\}$'
+
+# Approved in the browser, but the terms aren't accepted: the token is
+# kept, so accepting them is all that's left.
+env HKR_TOKEN=
+fake-hkr login.device.ok login.token.ok me.terms_not_accepted
+exits 3 hkr login
+stderr '^error: Accept HKr''s terms in the web app first: http://127\.0\.0\.1:\d+/terms/accept$'
+grep hkrp_test_token_device config/hkr/tokens.json

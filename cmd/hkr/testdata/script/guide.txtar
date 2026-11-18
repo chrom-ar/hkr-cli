@@ -4,3 +4,5 @@ stdout '^# Setting HKr up$'
 stdout 'hkr status --json'
 stdout 'hkr login --setup'
 ! stderr .
+stdout 'terms aren.t accepted,$'
+stdout '^  stop and ask the person to open the URL it gives'

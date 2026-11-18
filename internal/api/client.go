@@ -326,13 +326,14 @@ func (c *Client) parseError(resp *reply, data []byte) *Error {
 		Code    string              `json:"code"`
 		Message string              `json:"message"`
 		Fields  map[string][]string `json:"fields"`
+		URL     string              `json:"url"`
 	}
 	var rfc string
 	switch {
 	case json.Unmarshal(data, &env) != nil:
 		e.Code = ""
 	case json.Unmarshal(env.Error, &obj) == nil && obj.Message != "":
-		e.Code, e.Message, e.Fields = obj.Code, obj.Message, obj.Fields
+		e.Code, e.Message, e.Fields, e.URL = obj.Code, obj.Message, obj.Fields, obj.URL
 		if e.Code == "" {
 			e.Code = "http_error"
 		}
@@ -347,6 +348,7 @@ func (c *Client) parseError(resp *reply, data []byte) *Error {
 		}
 	}
 	e.Message = c.o.Token.Scrub(e.Message)
+	e.URL = c.o.Token.Scrub(e.URL)
 	for k, msgs := range e.Fields {
 		for i, m := range msgs {
 			msgs[i] = c.o.Token.Scrub(m)

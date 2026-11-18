@@ -66,6 +66,10 @@ An agent stops and asks the person for these:
   `--statement-accepted` on their behalf without their explicit say-so.
 - **Connecting a git host**: `hkr repos connect` opens a page where an
   admin of the organization, signed in, authorizes it.
+- **Accepting HKr's terms.** If HKr says the terms aren't accepted,
+  stop and ask the person to open the URL it gives (exit 3,
+  `terms_not_accepted`). There is no command to accept them, and an
+  agent never accepts them for the person.
 - **Buying credit**, in the web app (`hkr status` shows the link).
 - **Spending**: `hkr scans start`, `hkr findings fix`, a schedule or a
   fix level ask first. Pass `--yes` only when the person said so.

@@ -29,7 +29,7 @@ func newOrgsListCmd(a *app) *cobra.Command {
 				for _, o := range os {
 					rows = append(rows, []string{o.Slug, o.Name, o.Role, strconv.Itoa(o.OpenFindings), o.Locale})
 				}
-				return render.Table([]string{"SLUG", "NAME", "ROLE", "OPEN", "LANGUAGE"}, rows)
+				return render.Table([]string{"SLUG", "NAME", "ROLE", "OPEN CRITICAL/HIGH", "LANGUAGE"}, rows)
 			}, "You're in no organizations.")
 		},
 	}

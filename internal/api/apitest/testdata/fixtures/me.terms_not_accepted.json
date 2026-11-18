@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/me"
+  },
+  "response": {
+    "status": 403,
+    "body": {
+      "error": {
+        "code": "terms_not_accepted",
+        "message": "Accept HKr's terms in the web app first: http://hkr.test/terms/accept",
+        "url": "http://hkr.test/terms/accept"
+      }
+    }
+  }
+}

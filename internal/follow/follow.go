@@ -113,16 +113,23 @@ type follower struct {
 type AccessLostError struct{ Code string }
 
 func (e *AccessLostError) Error() string {
-	if e.Code == "unauthorized" {
+	switch e.Code {
+	case "unauthorized":
 		return "HKr closed the stream: the token was revoked"
+	case "terms_not_accepted":
+		return "HKr closed the stream: accept HKr's terms in the web app first"
 	}
 	return "HKr closed the stream: the scan is out of this token's reach"
 }
 
-// Is makes it match channel.ErrRevoked or api.ErrNotFound.
+// Is makes it match channel.ErrRevoked or api.ErrNotFound; unaccepted
+// terms match neither.
 func (e *AccessLostError) Is(target error) bool {
-	if e.Code == "unauthorized" {
+	switch e.Code {
+	case "unauthorized":
 		return target == channel.ErrRevoked
+	case "terms_not_accepted":
+		return false
 	}
 	return target == api.ErrNotFound
 }

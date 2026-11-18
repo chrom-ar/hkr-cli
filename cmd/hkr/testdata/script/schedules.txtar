@@ -2,7 +2,7 @@
 # deleting need a setup token, and ask first: they spend unattended.
 env HKR_TOKEN=hkrp_test_token_setup
 env HKR_ORG=acme
-fake-hkr schedules.list.ok schedules.list.empty schedule.create.ok schedule.pause.ok schedule.resume.ok schedule.delete.ok setup.get.complete
+fake-hkr schedules.list.ok schedules.list.empty schedule.create.ok schedule.pause.ok schedule.resume.ok schedule.delete.ok setup.get.complete domain.get.ok
 exits 0 hkr schedules list DomShop7Kq2X
 stdout '^ID            EVERY       AT     NEXT               LIMITS        STATUS$'
 stdout '^SchWeek7Kq2X  week \(mon\)  03:00  18 Nov 2026 12:00  up to \$60\.00  active$'
@@ -13,6 +13,7 @@ stderr 'a schedule spends credit unattended: pass --yes'
 
 exits 0 hkr schedules create DomShop7Kq2X --every week --weekday mon --at 03:00 --preset first_look --max-spend 60 --yes
 stdout '^Scheduled SchWeek7Kq2X: every week on mon at 03:00 \(America/Argentina/Buenos_Aires\), next 18 Nov 2026 12:00\.$'
+stderr '^warning: it''s skipped until the domain is verified and attested\.$'
 stderr '^Next \(optional\): '
 
 # Caught before asking HKr.

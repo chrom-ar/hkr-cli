@@ -13,6 +13,7 @@ import (
 	"github.com/chrom-ar/hkr-cli/internal/api"
 	"github.com/chrom-ar/hkr-cli/internal/auth"
 	"github.com/chrom-ar/hkr-cli/internal/channel"
+	"github.com/chrom-ar/hkr-cli/internal/follow"
 	"github.com/chrom-ar/hkr-cli/internal/render"
 	"github.com/chrom-ar/hkr-cli/internal/target"
 )
@@ -23,7 +24,7 @@ const (
 	ExitOK    = 0 // Done.
 	ExitError = 1 // HKr refused or failed: not found, not allowed, validation, network, server error.
 	ExitUsage = 2 // Wrong usage (unknown flag, missing argument).
-	ExitAuth  = 3 // Not signed in, a rejected or revoked token, or a read-only token asked to change something.
+	ExitAuth  = 3 // Not signed in, a rejected or revoked token, a token without the access asked for, or HKr's terms not accepted.
 	ExitScan  = 4 // scans follow: the scan failed or was cancelled, or --fail-on matched.
 )
 
@@ -60,6 +61,8 @@ func classify(err error) (int, string) {
 		return se.code, ""
 	case errors.As(err, &ue), errors.Is(err, target.ErrAmbiguous), errors.Is(err, target.ErrBadRef):
 		return ExitUsage, "usage"
+	case termsNotAccepted(err):
+		return ExitAuth, "terms_not_accepted"
 	case errors.As(err, &ns), errors.Is(err, channel.ErrRevoked):
 		return ExitAuth, "unauthorized"
 	case errors.As(err, &ae):
@@ -88,6 +91,20 @@ func exitCode(err error) int {
 	return code
 }
 
+// termsNotAccepted is HKr refusing until the person accepts its terms,
+// which they do in the web app: hkr never accepts for them.
+func termsNotAccepted(err error) bool {
+	var (
+		apiErr *api.Error
+		je     *channel.JoinError
+		lost   *follow.AccessLostError
+	)
+	const code = "terms_not_accepted"
+	return errors.As(err, &apiErr) && apiErr.Code == code ||
+		errors.As(err, &je) && je.Code == code ||
+		errors.As(err, &lost) && lost.Code == code
+}
+
 // hint is what to do next, when there's something to say.
 func (a *app) hint(err error) string {
 	var (
@@ -95,6 +112,8 @@ func (a *app) hint(err error) string {
 		apiErr *api.Error
 	)
 	switch {
+	case termsNotAccepted(err):
+		return "only you can accept them, in a browser; then run this again"
 	case errors.As(err, &ns):
 		return "run: hkr login (or set HKR_TOKEN)"
 	case errors.Is(err, api.ErrUnauthorized), errors.As(err, new(authError)):
@@ -143,6 +162,9 @@ func (a *app) reportError(err error) {
 		e := map[string]any{"code": kind, "message": msg}
 		if len(fields) > 0 {
 			e["fields"] = fields
+		}
+		if apiErr != nil && apiErr.URL != "" {
+			e["url"] = render.Safe(apiErr.URL)
 		}
 		b, _ := json.Marshal(map[string]any{"error": e})
 		fmt.Fprintf(w, "%s\n", b)

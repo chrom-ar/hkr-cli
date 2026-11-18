@@ -25,6 +25,7 @@ type Error struct {
 	Code       string
 	Message    string              // For people, shown as given.
 	Fields     map[string][]string // Per-field messages on 422.
+	URL        string              // Where the person acts, when HKr says (terms_not_accepted).
 	RetryAfter time.Duration       // From Retry-After, when given.
 }
 

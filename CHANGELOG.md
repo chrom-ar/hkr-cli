@@ -49,3 +49,9 @@ What changed in each release of `hkr`, for the people who use it.
 - `hkr schedules list|create|pause|resume|delete`: scan a domain every
   day, week or month, or once (creating, resuming and deleting ask
   first, and need a setup token).
+- When HKr's terms aren't accepted yet, `hkr` says where to accept them,
+  in the web app, and exits 3; `scans follow` too. It never accepts them
+  for you. A login approved before accepting keeps its token.
+- `hkr orgs list` labels its count "OPEN CRITICAL/HIGH", which is what it
+  counts. `hkr schedules create` warns when the domain isn't verified
+  or attested yet, since HKr skips the scans until it is.

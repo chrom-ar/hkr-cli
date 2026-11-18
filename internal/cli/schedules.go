@@ -210,6 +210,11 @@ func newSchedulesCreateCmd(a *app) *cobra.Command {
 				return a.printJSON(raw)
 			}
 			a.out("Scheduled %s: %s.", s.ID, a.scheduleText(s))
+			if d, _, err := cl.Domain(ctx, org, id); err == nil {
+				if missing := notReadyText(d); missing != "" {
+					a.warn("it's skipped until the domain is %s.", missing)
+				}
+			}
 			a.nextStep(ctx, cl, org)
 			return nil
 		},
@@ -315,4 +320,18 @@ func newScheduleVerbCmd(a *app, verb, short string, ask bool) *cobra.Command {
 			return nil
 		},
 	}
+}
+
+// notReadyText is what a domain lacks before HKr scans it on a schedule:
+// "verified and attested", "verified", "attested", or "".
+func notReadyText(d *api.Domain) string {
+	switch {
+	case !d.Verified && !d.Attested:
+		return "verified and attested"
+	case !d.Verified:
+		return "verified"
+	case !d.Attested:
+		return "attested"
+	}
+	return ""
 }
