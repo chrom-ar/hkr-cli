@@ -90,14 +90,16 @@ func (a *app) activity(ctx context.Context, id string) (*api.ActivityDetail, []b
 }
 
 func newActivityShowCmd(a *app) *cobra.Command {
-	return &cobra.Command{
+	var packages bool
+	c := &cobra.Command{
 		Use:   "show <id>",
 		Short: "One entry, as its page in the web app shows it",
 		Long: "One entry of hkr activity: a delivery and what HKr decided, a fix pull\n" +
 			"request with its test runs and its whole patch, or a read of the lock\n" +
-			"files with each project. hkr open activity <id> opens its page.",
+			"files with each project (--packages: what each resolved). hkr open\n" +
+			"activity <id> opens its page.",
 		Example: "  hkr activity show pull_request-Fx2Kq2XpAb2m\n" +
-			"  hkr activity show dependencies-Sy2Kq2XpAb2m --json",
+			"  hkr activity show dependencies-Sy2Kq2XpAb2m --packages",
 		Args: argsBetween(1, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			e, raw, err := a.activity(cmd.Context(), args[0])
@@ -107,13 +109,15 @@ func newActivityShowCmd(a *app) *cobra.Command {
 			if a.flags.json {
 				return a.printJSON(raw)
 			}
-			a.showActivity(e)
+			a.showActivity(e, packages)
 			return nil
 		},
 	}
+	c.Flags().BoolVar(&packages, "packages", false, "a read of the lock files: every package each project resolved")
+	return c
 }
 
-func (a *app) showActivity(e *api.ActivityDetail) {
+func (a *app) showActivity(e *api.ActivityDetail, packages bool) {
 	d := &e.Details
 	repo := render.Safe(e.Repository.FullName)
 	line := func(width int, label, v string) {
@@ -176,7 +180,23 @@ func (a *app) showActivity(e *api.ActivityDetail) {
 		if e.FinishedAt != "" {
 			line(10, "Finished", render.Time(e.FinishedAt, a.env.Location, "2 Jan 2006 15:04"))
 		}
-		if len(d.Projects) > 0 {
+		if e.Status == "failed" {
+			line(10, "Failed", failureText(e.FailureReason))
+			a.out("The last complete read still stands; the next push or the weekly read retries.")
+		}
+		switch {
+		case packages:
+			for _, p := range d.Projects {
+				a.out("\n%s (%s, %d package%s)", render.Safe(p.Path), render.Safe(strings.Join(p.Ecosystems, ", ")), p.Packages, plural(p.Packages))
+				rows := make([][]string, 0, len(p.Components))
+				for _, c := range p.Components {
+					rows = append(rows, []string{render.Safe(c.Name), render.Safe(c.Version), render.Safe(c.Ecosystem), yesNo(c.Direct), render.Safe(c.Scope)})
+				}
+				if len(rows) > 0 {
+					a.out("%s", render.Table([]string{"NAME", "VERSION", "ECOSYSTEM", "DIRECT", "SCOPE"}, rows))
+				}
+			}
+		case len(d.Projects) > 0:
 			rows := make([][]string, 0, len(d.Projects))
 			for _, p := range d.Projects {
 				rows = append(rows, []string{render.Safe(p.Path), render.Safe(strings.Join(p.Ecosystems, ", ")), strconv.Itoa(p.Packages)})
@@ -271,7 +291,25 @@ func readText(e *api.Activity) string {
 	if e.Status == "complete" {
 		return fmt.Sprintf("%d/%d read", e.ProjectsRead, e.ProjectsRead+e.ProjectsUnread)
 	}
+	if e.FailureReason != "" {
+		return render.Safe(e.Status) + " (" + render.Safe(e.FailureReason) + ")"
+	}
 	return render.Safe(e.Status)
+}
+
+// failureText is what the web app says about where a read stopped.
+func failureText(reason string) string {
+	switch reason {
+	case "container":
+		return "HKr could not start the machine that reads the repository."
+	case "clone":
+		return "HKr could not download the repository. If this keeps happening, check that its connection still has access."
+	case "workspace", "agent":
+		return "The reader could not get started."
+	case "never_finished":
+		return "The reader stopped before it finished."
+	}
+	return render.Safe(reason)
 }
 
 func plural(n int) string {

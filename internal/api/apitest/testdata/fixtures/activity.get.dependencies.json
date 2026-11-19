@@ -12,6 +12,15 @@
       "details": {
         "projects": [
           {
+            "components": [
+              {
+                "direct": true,
+                "ecosystem": "npm",
+                "name": "lodash",
+                "scope": "runtime",
+                "version": "4.17.20"
+              }
+            ],
             "ecosystems": [
               "npm"
             ],
@@ -23,6 +32,7 @@
         "unread": []
       },
       "entries_skipped": 0,
+      "failure_reason": null,
       "finished_at": "2026-11-18T12:00:00Z",
       "id": "dependencies-SynLock7Kq2X",
       "kind": "dependencies",

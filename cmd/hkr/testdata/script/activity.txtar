@@ -63,3 +63,12 @@ stdout '^PR #413 on acme/web: open, verified · upgrades lodash 4\.17\.20 → 4\
 stdout '^Upgraded      lodash 4\.17\.21, 4\.17\.23$'
 stdout '^Tests         npm test: exit 0 → 0$'
 stdout '^CVE           hkr deps show \S+$'
+
+# A read of the lock files: the projects; --packages adds what each resolved.
+fake-hkr activity.get.dependencies
+exits 0 hkr activity show dependencies-SynLock7Kq2X
+! stdout lodash
+exits 0 hkr activity show dependencies-SynLock7Kq2X --packages
+stdout '^\. \(npm, 1 package\)$'
+stdout '^NAME    VERSION  ECOSYSTEM  DIRECT  SCOPE$'
+stdout '^lodash  4\.17\.20  npm        yes     runtime$'

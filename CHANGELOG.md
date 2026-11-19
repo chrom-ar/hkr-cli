@@ -2,6 +2,12 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
+## Unreleased
+
+- `hkr activity show` on a read of the lock files: `--packages` prints
+  every package each project resolved, and a failed read says where it
+  stopped (`hkr activity` shows it too, e.g. `failed (clone)`).
+
 ## 0.2.0
 
 - `hkr activity show <id>`: one entry as its page in the web app shows

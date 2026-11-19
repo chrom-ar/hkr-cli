@@ -164,6 +164,9 @@ type Activity struct {
 	ProjectsRead   int    `json:"projects_read"`
 	ProjectsUnread int    `json:"projects_unread"`
 	FinishedAt     string `json:"finished_at"`
+	// FailureReason says where a failed read stopped: container,
+	// workspace, clone, agent or never_finished; "" when unknown.
+	FailureReason string `json:"failure_reason"`
 }
 
 // ActivityDetail is one activity entry with what its page shows.
@@ -193,6 +196,13 @@ type ActivityDetail struct {
 			Path       string   `json:"path"`
 			Packages   int      `json:"packages"`
 			Ecosystems []string `json:"ecosystems"`
+			Components []struct {
+				Name      string `json:"name"`
+				Version   string `json:"version"`
+				Ecosystem string `json:"ecosystem"`
+				Direct    bool   `json:"direct"`
+				Scope     string `json:"scope"`
+			} `json:"components"`
 		} `json:"projects"`
 		Unread []struct {
 			Path   string `json:"path"`

@@ -47,6 +47,7 @@
           "branch": "main",
           "commit_sha": "a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2",
           "entries_skipped": 0,
+          "failure_reason": null,
           "finished_at": "2026-11-18T12:00:00Z",
           "id": "dependencies-SynLock7Kq2X",
           "kind": "dependencies",

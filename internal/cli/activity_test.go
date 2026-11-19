@@ -44,3 +44,27 @@ func TestBumpedText(t *testing.T) {
 		}
 	}
 }
+
+// A failed read says where it stopped.
+func TestFailedReadText(t *testing.T) {
+	var e api.Activity
+	if err := json.Unmarshal([]byte(`{"kind":"dependencies","status":"failed","branch":"main","failure_reason":"clone"}`), &e); err != nil {
+		t.Fatal(err)
+	}
+	if got, want := activityText(&e), "lock files main · failed (clone)"; got != want {
+		t.Errorf("activityText = %q, want %q", got, want)
+	}
+	for reason, want := range map[string]string{
+		"container":      "HKr could not start the machine that reads the repository.",
+		"clone":          "HKr could not download the repository. If this keeps happening, check that its connection still has access.",
+		"workspace":      "The reader could not get started.",
+		"agent":          "The reader could not get started.",
+		"never_finished": "The reader stopped before it finished.",
+		"":               "",
+		"new_reason":     "new_reason",
+	} {
+		if got := failureText(reason); got != want {
+			t.Errorf("failureText(%q) = %q, want %q", reason, got, want)
+		}
+	}
+}
