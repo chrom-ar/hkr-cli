@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.1.3
 
 - `hkr activity` (and `hkr repos activity <repo>`): what HKr did with
   the organization's code, newest first: deliveries from the git host and
