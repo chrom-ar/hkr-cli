@@ -2,6 +2,13 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
+## Unreleased
+
+- `hkr activity` (and `hkr repos activity <repo>`): what HKr did with
+  the organization's code, newest first: deliveries from the git host and
+  what HKr decided, the pull requests it opened, lock file reads.
+  `--repo`, `--kind delivery|pull_request|dependencies`.
+
 ## 0.1.2
 
 - `hkr version` prints the version and checks for a newer release right

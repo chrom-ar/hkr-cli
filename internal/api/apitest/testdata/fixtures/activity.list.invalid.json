@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/activity",
+    "query": {
+      "kind": "everything"
+    }
+  },
+  "response": {
+    "status": 400,
+    "body": {
+      "error": {
+        "code": "invalid",
+        "message": "kind must be one of delivery, pull_request, dependencies."
+      }
+    }
+  }
+}

@@ -179,7 +179,7 @@ func newRootCmd(a *app) *cobra.Command {
 	}
 	add("start", newLoginCmd(a), newLogoutCmd(a), newWhoamiCmd(a), newUseCmd(a), newOrgsCmd(a), newStatusCmd(a), newGuideCmd(a))
 	add("work", newFindingsCmd(a), newFixesCmd(a), newDomainsCmd(a), newScansCmd(a), newSchedulesCmd(a))
-	add("code", newReposCmd(a), newLinksCmd(a), newReviewsCmd(a), newDepsCmd(a))
+	add("code", newReposCmd(a), newLinksCmd(a), newReviewsCmd(a), newDepsCmd(a), newActivityCmd(a, false))
 	add("more", newOpenCmd(a), newAPICmd(a), newVersionCmd(a))
 	root.SetHelpCommandGroupID("more")
 	root.SetCompletionCommandGroupID("more")

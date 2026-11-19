@@ -1,0 +1,32 @@
+package cli
+
+import (
+	"encoding/json"
+	"testing"
+
+	"github.com/chrom-ar/hkr-cli/internal/api"
+)
+
+func TestActivityText(t *testing.T) {
+	for want, in := range map[string]string{
+		"push main a3f21c9d8e7b by ana → skipped (branch_not_reviewed)": `{"kind":"delivery","event":"push","branch":"main",
+			"commit_sha":"a3f21c9d8e7b6a5f","pushed_by":"ana","outcome":"skipped","reason":"branch_not_reviewed","review":null}`,
+		"pull_request feat a3f21c9d8e7b → reviewed (review running)": `{"kind":"delivery","event":"pull_request","branch":"feat",
+			"commit_sha":"a3f21c9d8e7b6a5f","outcome":"reviewed","review":{"status":"running"}}`,
+		"PR #412 open, verified · fixes F-07": `{"kind":"pull_request","number":412,"state":"open","status":"verified",
+			"finding":{"ref":"F-07","title":"x"},"dependency":null}`,
+		"PR #9 merged · upgrades lodash":          `{"kind":"pull_request","number":9,"state":"merged","dependency":{"package_name":"lodash"}}`,
+		"lock files main a1b2c3d4e5f6 · 2/3 read": `{"kind":"dependencies","status":"complete","branch":"main","commit_sha":"a1b2c3d4e5f6a1b2","projects_read":2,"projects_unread":1}`,
+		"lock files main · failed":                `{"kind":"dependencies","status":"failed","branch":"main"}`,
+		// Server text is neutralized.
+		"push main by \uFFFD[31mana → received": `{"kind":"delivery","event":"push","branch":"main","pushed_by":"\u001b[31mana","outcome":"received"}`,
+	} {
+		var e api.Activity
+		if err := json.Unmarshal([]byte(in), &e); err != nil {
+			t.Fatal(err)
+		}
+		if got := activityText(&e); got != want {
+			t.Errorf("activityText(%s) = %q, want %q", in, got, want)
+		}
+	}
+}

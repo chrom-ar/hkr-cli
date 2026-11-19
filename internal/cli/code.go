@@ -247,7 +247,7 @@ func newReposCmd(a *app) *cobra.Command {
 		},
 	}
 	return group(a, "repos", "Connected repositories (organization admins)",
-		"  hkr repos list\n  hkr repos show acme/web\n  hkr repos connect github", list, show, newReposConnectCmd(a), newReposSetCmd(a))
+		"  hkr repos list\n  hkr repos show acme/web\n  hkr repos connect github", list, show, newReposConnectCmd(a), newReposSetCmd(a), newActivityCmd(a, true))
 }
 
 func newReviewsCmd(a *app) *cobra.Command {

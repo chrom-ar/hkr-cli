@@ -138,6 +138,8 @@ hkr deps list                                     # dependency CVEs, worst first
 hkr deps show Ex2Kq2XpAb2m
 hkr deps fix Ex2Kq2XpAb2m                         # an upgrade pull request (costs credit)
 hkr deps dismiss Ex2Kq2XpAb2m
+hkr activity                                      # pushes HKr reviewed, PRs it opened, lock file reads
+hkr repos activity acme/web                       # the same, for one repository
 ```
 
 ## Using it with an agent

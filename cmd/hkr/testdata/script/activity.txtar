@@ -1,0 +1,24 @@
+# What HKr did with the organization's code, newest first: deliveries
+# from the git host, the pull requests it opened, lock file reads.
+env HKR_TOKEN=hkrp_test_token_laptop
+env HKR_ORG=acme
+fake-hkr repos.list.ok activity.list.ok activity.list.invalid
+exits 0 hkr activity --repo acme/web
+stdout '^WHEN               REPOSITORY  WHAT$'
+stdout '^18 Nov 2026 12:00  acme/web    push main a3f21c9d8e7b by ana → reviewed \(1 comment\)$'
+stdout '^18 Nov 2026 12:00  acme/web    lock files main a1b2c3d4e5f6 · 1/1 read$'
+
+# repos activity is the same list for one repository.
+exits 0 hkr repos activity RepWeb7Kq2Xp
+stdout 'push main a3f21c9d8e7b by ana → reviewed \(1 comment\)$'
+
+exits 0 hkr activity --repo acme/web --json
+stdout '"kind": "delivery"'
+
+exits 2 hkr activity --kind everything
+stderr 'unknown --kind "everything": use delivery, pull_request or dependencies'
+
+# Every kind: a skipped delivery says why, a fix pull request what it fixes.
+exits 0 hkr activity --repo acme/web
+stdout '^18 Nov 2026 12:00  acme/web    push spike/search [0-9a-f]{12} by \S+ → skipped \(branch_not_watched\)$'
+stdout '^18 Nov 2026 12:00  acme/web    PR #412 open, proven · fixes F-07$'

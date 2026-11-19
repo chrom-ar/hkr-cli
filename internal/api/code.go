@@ -123,3 +123,38 @@ type Link struct {
 	DecidedBy *User  `json:"decided_by"`
 	CreatedAt string `json:"created_at"`
 }
+
+// Activity is one thing HKr did with the organization's code: a
+// delivery from the git host, a pull request it opened, or a read of the
+// lock files. Kind says which; the other kinds' fields are empty.
+type Activity struct {
+	ID         string  `json:"id"`
+	Kind       string  `json:"kind"`
+	At         string  `json:"at"`
+	Repository RepoRef `json:"repository"`
+	Branch     string  `json:"branch"`
+	CommitSHA  string  `json:"commit_sha"`
+	Status     string  `json:"status"`
+
+	// delivery
+	Event    string  `json:"event"`
+	PushedBy string  `json:"pushed_by"`
+	Outcome  string  `json:"outcome"`
+	Reason   string  `json:"reason"`
+	Review   *Review `json:"review"`
+
+	// pull_request
+	Number  int    `json:"number"`
+	State   string `json:"state"`
+	Finding *struct {
+		Ref   string `json:"ref"`
+		Title string `json:"title"`
+	} `json:"finding"`
+	Dependency *struct {
+		PackageName string `json:"package_name"`
+	} `json:"dependency"`
+
+	// dependencies
+	ProjectsRead   int `json:"projects_read"`
+	ProjectsUnread int `json:"projects_unread"`
+}
