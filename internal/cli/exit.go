@@ -124,7 +124,7 @@ func (a *app) hint(err error) string {
 		return "this token is read-only; create one with write access, or run: hkr login"
 	case errors.Is(err, target.ErrAmbiguous):
 		return "or set a default for this HKr: hkr use <org>"
-	case errors.As(err, &apiErr) && (apiErr.Code == "insufficient_balance" || apiErr.Code == "no_plan"):
+	case errors.As(err, &apiErr) && apiErr.Code == "insufficient_balance":
 		if a.session != nil {
 			return "add credit: " + a.session.url + "/organization/billing"
 		}

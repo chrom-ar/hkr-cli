@@ -58,10 +58,10 @@ type Organization struct {
 }
 
 // Org is GET /orgs/:org: the organization and its credit (USD, two
-// decimals). Plan is the plan's key, or nil when it has none and can't
-// spend.
+// decimals). MonthlyUSD is the monthly credit commitment, or nil
+// without one.
 type Org struct {
 	Organization
 	BalanceUSD string  `json:"balance_usd"`
-	Plan       *string `json:"plan"`
+	MonthlyUSD *string `json:"monthly_usd"`
 }
