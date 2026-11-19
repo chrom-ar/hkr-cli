@@ -2,9 +2,11 @@ package cli
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/chrom-ar/hkr-cli/internal/api"
+	"github.com/chrom-ar/hkr-cli/internal/render"
 	"github.com/chrom-ar/hkr-cli/internal/target"
 	"github.com/spf13/cobra"
 )
@@ -12,10 +14,10 @@ import (
 func newOpenCmd(a *app) *cobra.Command {
 	var noBrowser bool
 	c := &cobra.Command{
-		Use:   "open [findings | finding <id|url> | domain <domain> | scan <domain> [<number>] | repo <repo>]",
-		Short: "Open the web app's page for a finding, domain, scan or repository",
+		Use:   "open [findings | finding <id|url> | domain <domain> | scan <domain> [<number>] | repo <repo> | activity <id>]",
+		Short: "Open the web app's page for a finding, domain, scan, repository or activity",
 		Long: "Open a page of HKr's web app: home (no argument), the findings, one\n" +
-			"finding, a domain, a scan, or a repository. The URL is printed too. The\n" +
+			"finding, a domain, a scan, a repository, or an entry of hkr activity. The URL is printed too. The\n" +
 			"web app shows the organization you last chose there.",
 		Example: "  hkr open\n" +
 			"  hkr open finding Fx7Kq2XpAb2m\n" +
@@ -25,15 +27,15 @@ func newOpenCmd(a *app) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			ctx := cmd.Context()
 			page := argAt(args, 0)
-			want := map[string][2]int{"": {0, 0}, "findings": {0, 0}, "finding": {1, 1}, "domain": {1, 1}, "scan": {1, 2}, "repo": {1, 1}}
+			want := map[string][2]int{"": {0, 0}, "findings": {0, 0}, "finding": {1, 1}, "domain": {1, 1}, "scan": {1, 2}, "repo": {1, 1}, "activity": {1, 1}}
 			n, ok := want[page]
 			if !ok {
-				return usageError{errors.New("unknown page " + quote(page) + ": use findings, finding, domain, scan or repo")}
+				return usageError{errors.New("unknown page " + quote(page) + ": use findings, finding, domain, scan, repo or activity")}
 			}
 			rest := args[min(1, len(args)):]
 			if len(rest) < n[0] || len(rest) > n[1] {
 				return usageError{errors.New("usage: hkr open " + page + " " + map[string]string{
-					"finding": "<id|url>", "domain": "<domain>", "scan": "<domain> [<number>]", "repo": "<repo>"}[page])}
+					"finding": "<id|url>", "domain": "<domain>", "scan": "<domain> [<number>]", "repo": "<repo>", "activity": "<id>"}[page])}
 			}
 			cl, _, err := a.client()
 			if err != nil {
@@ -76,6 +78,16 @@ func newOpenCmd(a *app) *cobra.Command {
 					return err
 				}
 				link += "code/" + api.Seg(id)
+			case "activity":
+				e, _, err := a.activity(ctx, rest[0])
+				if err != nil {
+					return err
+				}
+				// The page HKr names, as long as it's on HKr.
+				if !sameOrigin(e.URL, cl.Origin()) {
+					return fmt.Errorf("HKr gave no page on %s for %s", cl.Origin(), render.Safe(rest[0]))
+				}
+				link = e.URL
 			}
 			a.out("%s", link)
 			if a.env.StdoutIsTerminal && !noBrowser {

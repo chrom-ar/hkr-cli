@@ -1,0 +1,54 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/activity/pull_request-FixBump7Kq2X"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "at": "2026-11-18T12:00:00Z",
+      "dependency": {
+        "ecosystem": "npm",
+        "fixed_version": "4.17.21",
+        "id": "ExpLoda7Kq2X",
+        "matched_version": "4.17.20",
+        "package_name": "lodash"
+      },
+      "details": {
+        "branch": "hkr/bump-lodash",
+        "bumped_versions": [
+          "4.17.21",
+          "4.17.23"
+        ],
+        "merge_commit_sha": null,
+        "opened_by": null,
+        "patch": "--- a/package-lock.json\n+++ b/package-lock.json\n",
+        "reproduction": {
+          "command": null,
+          "exit_after": null,
+          "exit_before": null
+        },
+        "settled_at": null,
+        "tests": {
+          "command": "npm test",
+          "exit_after": 0,
+          "exit_before": 0
+        },
+        "unverified_reason": null
+      },
+      "finding": null,
+      "fix_id": "FixBump7Kq2X",
+      "id": "pull_request-FixBump7Kq2X",
+      "kind": "pull_request",
+      "number": 413,
+      "pull_request_url": "https://github.com/acme/web/pull/413",
+      "repository": {
+        "full_name": "acme/web",
+        "id": "RepWeb7Kq2Xp"
+      },
+      "state": "open",
+      "status": "verified",
+      "url": "http://hkr.test/code/RepWeb7Kq2Xp/pull-requests/FixBump7Kq2X"
+    }
+  }
+}

@@ -140,6 +140,7 @@ hkr deps fix Ex2Kq2XpAb2m                         # an upgrade pull request (cos
 hkr deps dismiss Ex2Kq2XpAb2m
 hkr activity                                      # pushes HKr reviewed, PRs it opened, lock file reads
 hkr repos activity acme/web                       # the same, for one repository
+hkr activity show pull_request-Fx2Kq2XpAb2m       # one entry: a fix's test runs and patch
 ```
 
 ## Using it with an agent

@@ -2,6 +2,14 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
+## Unreleased
+
+- `hkr activity show <id>`: one entry as its page in the web app shows
+  it. A fix pull request comes with its test runs (exit before → after)
+  and its whole patch; a read of the lock files with each project, and
+  the ones it couldn't read and why. `hkr open activity <id>` opens the
+  page.
+
 ## 0.1.3
 
 - `hkr activity` (and `hkr repos activity <repo>`): what HKr did with

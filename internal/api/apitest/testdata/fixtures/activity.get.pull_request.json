@@ -1,0 +1,49 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/activity/pull_request-FixProp7Kq2X"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "at": "2026-11-18T12:00:00Z",
+      "dependency": null,
+      "details": {
+        "branch": "hkr/fix-f-07",
+        "bumped_versions": [],
+        "merge_commit_sha": null,
+        "opened_by": null,
+        "patch": "--- a/lib/search.ex\n+++ b/lib/search.ex\n@@ -42 +42 @@\n-Repo.query(\"SELECT * FROM items WHERE name = '#{q}'\")\n+Repo.query(\"SELECT * FROM items WHERE name = $1\", [q])\n",
+        "reproduction": {
+          "command": null,
+          "exit_after": null,
+          "exit_before": null
+        },
+        "settled_at": null,
+        "tests": {
+          "command": "mix test",
+          "exit_after": 0,
+          "exit_before": 1
+        },
+        "unverified_reason": null
+      },
+      "finding": {
+        "id": "FndSqxi7Kq2X",
+        "ref": "F-07",
+        "title": "SQL injection in the search handler"
+      },
+      "fix_id": "FixProp7Kq2X",
+      "id": "pull_request-FixProp7Kq2X",
+      "kind": "pull_request",
+      "number": 412,
+      "pull_request_url": "https://github.com/acme/web/pull/412",
+      "repository": {
+        "full_name": "acme/web",
+        "id": "RepWeb7Kq2Xp"
+      },
+      "state": "open",
+      "status": "proven",
+      "url": "http://hkr.test/code/RepWeb7Kq2Xp/pull-requests/FixProp7Kq2X"
+    }
+  }
+}

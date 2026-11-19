@@ -30,3 +30,17 @@ func TestActivityText(t *testing.T) {
 		}
 	}
 }
+
+// bumpedText is what HKr read back from the lock file after an upgrade,
+// each version once.
+func TestBumpedText(t *testing.T) {
+	for want, vs := range map[string][]string{
+		"":                        nil,
+		"lodash 4.17.21":          {"4.17.21", "4.17.21"},
+		"lodash 4.17.21, 4.17.20": {"4.17.21", "4.17.20", "4.17.21"},
+	} {
+		if got := bumpedText("lodash", vs); got != want {
+			t.Errorf("bumpedText(%q) = %q, want %q", vs, got, want)
+		}
+	}
+}

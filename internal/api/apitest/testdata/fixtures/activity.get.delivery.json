@@ -1,0 +1,30 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/v1/orgs/acme/activity/delivery-EvtSkip7Kq2X"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "at": "2026-11-18T12:00:00Z",
+      "branch": "spike/search",
+      "commit_sha": "b4e32d0a9f8e7d6c5b4a3f21c9d8e7b6a5f4c3d2",
+      "details": {
+        "delivery_id": "d-activity-skipped",
+        "host": "github"
+      },
+      "event": "push",
+      "id": "delivery-EvtSkip7Kq2X",
+      "kind": "delivery",
+      "outcome": "skipped",
+      "pushed_by": "ana",
+      "reason": "branch_not_watched",
+      "repository": {
+        "full_name": "acme/web",
+        "id": "RepWeb7Kq2Xp"
+      },
+      "review": null,
+      "url": "http://hkr.test/code/RepWeb7Kq2Xp/deliveries/EvtSkip7Kq2X"
+    }
+  }
+}

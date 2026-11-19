@@ -135,6 +135,7 @@ type Activity struct {
 	Branch     string  `json:"branch"`
 	CommitSHA  string  `json:"commit_sha"`
 	Status     string  `json:"status"`
+	URL        string  `json:"url"` // Its page in the web app.
 
 	// delivery
 	Event    string  `json:"event"`
@@ -144,17 +145,66 @@ type Activity struct {
 	Review   *Review `json:"review"`
 
 	// pull_request
-	Number  int    `json:"number"`
-	State   string `json:"state"`
-	Finding *struct {
+	Number         int    `json:"number"`
+	PullRequestURL string `json:"pull_request_url"`
+	State          string `json:"state"`
+	Finding        *struct {
 		Ref   string `json:"ref"`
 		Title string `json:"title"`
 	} `json:"finding"`
 	Dependency *struct {
-		PackageName string `json:"package_name"`
+		ID             string `json:"id"` // The exposure, as in /dependencies.
+		Ecosystem      string `json:"ecosystem"`
+		PackageName    string `json:"package_name"`
+		MatchedVersion string `json:"matched_version"`
+		FixedVersion   string `json:"fixed_version"`
 	} `json:"dependency"`
 
 	// dependencies
-	ProjectsRead   int `json:"projects_read"`
-	ProjectsUnread int `json:"projects_unread"`
+	ProjectsRead   int    `json:"projects_read"`
+	ProjectsUnread int    `json:"projects_unread"`
+	FinishedAt     string `json:"finished_at"`
+}
+
+// ActivityDetail is one activity entry with what its page shows.
+type ActivityDetail struct {
+	Activity
+	Details struct {
+		// delivery
+		DeliveryID string `json:"delivery_id"`
+		Host       string `json:"host"`
+
+		// pull_request
+		Branch   string `json:"branch"`
+		OpenedBy *struct {
+			Name string `json:"name"`
+		} `json:"opened_by"`
+		UnverifiedReason string   `json:"unverified_reason"`
+		SettledAt        string   `json:"settled_at"`
+		MergeCommitSHA   string   `json:"merge_commit_sha"`
+		Tests            CmdRun   `json:"tests"`
+		Reproduction     CmdRun   `json:"reproduction"`
+		Patch            string   `json:"patch"`
+		BumpedVersions   []string `json:"bumped_versions"`
+
+		// dependencies
+		StartedAt string `json:"started_at"`
+		Projects  []struct {
+			Path       string   `json:"path"`
+			Packages   int      `json:"packages"`
+			Ecosystems []string `json:"ecosystems"`
+		} `json:"projects"`
+		Unread []struct {
+			Path   string `json:"path"`
+			Reason string `json:"reason"`
+			Detail string `json:"detail"`
+		} `json:"unread"`
+	} `json:"details"`
+}
+
+// CmdRun is a command HKr ran before and after a fix, with its exits.
+type CmdRun struct {
+	Command    string `json:"command"`
+	ExitBefore *int   `json:"exit_before"`
+	ExitAfter  *int   `json:"exit_after"`
 }
