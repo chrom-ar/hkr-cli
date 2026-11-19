@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.2.0
 
 - `hkr activity show <id>`: one entry as its page in the web app shows
   it. A fix pull request comes with its test runs (exit before → after)
