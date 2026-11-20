@@ -87,6 +87,25 @@ type Advisory struct {
 	CVSSScore   *float64 `json:"cvss_score"`
 	Summary     string   `json:"summary"`
 	PublishedAt string   `json:"published_at"`
+	CWEIDs      []string `json:"cwe_ids"`
+	// Exploitation is what CISA (KEV, SSVC) and FIRST (EPSS) say; a nil
+	// field means no source has said.
+	Exploitation Exploitation `json:"exploitation"`
+}
+
+// Exploitation is whether, and how likely, a CVE is exploited.
+type Exploitation struct {
+	KnownExploited      bool     `json:"known_exploited"`
+	KEVAddedOn          string   `json:"kev_added_on"`
+	KEVDueOn            string   `json:"kev_due_on"`
+	Ransomware          *bool    `json:"ransomware"`
+	CISARequiredAction  string   `json:"cisa_required_action"`
+	SSVCExploitation    string   `json:"ssvc_exploitation"`
+	SSVCAutomatable     *bool    `json:"ssvc_automatable"`
+	SSVCTechnicalImpact string   `json:"ssvc_technical_impact"`
+	EPSS                *float64 `json:"epss"`
+	EPSSPercentile      *float64 `json:"epss_percentile"`
+	EPSSOn              string   `json:"epss_on"`
 }
 
 // Name is the advisory's CVE id, else its OSV id.

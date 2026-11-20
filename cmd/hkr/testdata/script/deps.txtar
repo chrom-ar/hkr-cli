@@ -3,8 +3,8 @@ env HKR_TOKEN=hkrp_test_token_laptop
 env HKR_ORG=acme
 fake-hkr deps.list.ok deps.list.filtered dep.get.ok dep.fix.created dep.restore.ok dep.dismiss.not_dismissable
 exits 0 hkr deps list
-stdout '^ID            SEVERITY  PACKAGE         FIXED IN  REPOSITORY  STATUS  ADVISORY$'
-stdout '^ExpLoda7Kq2X  high      lodash@4\.17\.20  4\.17\.21   acme/web    open    CVE-2026-6100$'
+stdout '^ID            SEVERITY  EXPLOITED  EPSS   PACKAGE         FIXED IN  REPOSITORY  STATUS  ADVISORY$'
+stdout '^ExpLoda7Kq2X  high      yes        91\.2%  lodash@4\.17\.20  4\.17\.21   acme/web    open    CVE-2026-6100$'
 
 exits 0 hkr deps list --status dismissed,resolved --repo RepWeb7Kq2Xp
 stdout '^No dependency CVEs\.$'
@@ -17,6 +17,12 @@ stdout '^lodash@4\.17\.20 \(npm, runtime\) in acme/web: CVE-2026-6100$'
 stdout '^Severity  high$'
 stdout '^Fixed in  4\.17\.21$'
 stdout '^Summary   Prototype pollution in lodash$'
+# Whether it's exploited: CISA's KEV and SSVC, FIRST's EPSS.
+stdout '^Exploited yes, in CISA''s KEV since 10 Nov 2026; fix by 1 Dec 2026$'
+stdout '^Action    Apply mitigations per vendor instructions\.$'
+stdout '^SSVC      exploitation active, automatable, technical impact partial$'
+stdout '^EPSS      91\.2% chance of exploitation in 30 days \(above 99\.8% of CVEs, 18 Nov 2026\)$'
+stdout '^CWE       CWE-1321$'
 
 # fix spends credit: it asks, or --yes.
 exits 2 hkr deps fix ExpLoda7Kq2X

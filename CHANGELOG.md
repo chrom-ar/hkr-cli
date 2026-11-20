@@ -2,6 +2,13 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
+## Unreleased
+
+- `hkr deps list` says which CVEs are known to be exploited (CISA's KEV)
+  and how likely exploitation is (FIRST's EPSS); `hkr deps show` adds
+  CISA's due date and required action, its SSVC decision points, and
+  the CWE ids.
+
 ## 0.2.1
 
 - `hkr activity show` on a read of the lock files: `--packages` prints

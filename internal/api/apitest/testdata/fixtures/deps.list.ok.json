@@ -11,6 +11,22 @@
           "advisory": {
             "cve_id": "CVE-2026-6100",
             "cvss_score": null,
+            "cwe_ids": [
+              "CWE-1321"
+            ],
+            "exploitation": {
+              "cisa_required_action": "Apply mitigations per vendor instructions.",
+              "epss": 0.912,
+              "epss_on": "2026-11-18",
+              "epss_percentile": 0.998,
+              "kev_added_on": "2026-11-10",
+              "kev_due_on": "2026-12-01",
+              "known_exploited": true,
+              "ransomware": false,
+              "ssvc_automatable": true,
+              "ssvc_exploitation": "active",
+              "ssvc_technical_impact": "partial"
+            },
             "id": "AdvLoda7Kq2X",
             "osv_id": "GHSA-2026-6100",
             "published_at": null,

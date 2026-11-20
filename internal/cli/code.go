@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/chrom-ar/hkr-cli/internal/api"
 	"github.com/chrom-ar/hkr-cli/internal/render"
@@ -349,10 +350,15 @@ func newDepsCmd(a *app) *cobra.Command {
 			return printList(ctx, a, cl, &l, api.OrgPath(org)+"/dependencies", q, func(es []api.Exposure) string {
 				rows := make([][]string, 0, len(es))
 				for _, e := range es {
-					rows = append(rows, []string{e.ID, e.Advisory.Severity, render.Safe(e.PackageName + "@" + e.MatchedVersion),
+					x := e.Advisory.Exploitation
+					exploited := ""
+					if x.KnownExploited {
+						exploited = "yes"
+					}
+					rows = append(rows, []string{e.ID, e.Advisory.Severity, exploited, percent(x.EPSS), render.Safe(e.PackageName + "@" + e.MatchedVersion),
 						render.Safe(e.FixedVersion), render.Safe(e.Repository.FullName), e.Status, render.Safe(e.Advisory.Name())})
 				}
-				return render.Table([]string{"ID", "SEVERITY", "PACKAGE", "FIXED IN", "REPOSITORY", "STATUS", "ADVISORY"}, rows)
+				return render.Table([]string{"ID", "SEVERITY", "EXPLOITED", "EPSS", "PACKAGE", "FIXED IN", "REPOSITORY", "STATUS", "ADVISORY"}, rows)
 			}, "No dependency CVEs.")
 		},
 	}
@@ -384,6 +390,37 @@ func newDepsCmd(a *app) *cobra.Command {
 			line("Status", e.Status)
 			line("Fixed in", render.Safe(e.FixedVersion))
 			line("Summary", render.Safe(e.Advisory.Summary))
+			x := e.Advisory.Exploitation
+			if x.KnownExploited {
+				text := "yes, in CISA's KEV"
+				if x.KEVAddedOn != "" {
+					text += " since " + day(x.KEVAddedOn)
+				}
+				if x.KEVDueOn != "" {
+					text += "; fix by " + day(x.KEVDueOn)
+				}
+				if x.Ransomware != nil && *x.Ransomware {
+					text += "; used in ransomware campaigns"
+				}
+				line("Exploited", text)
+				line("Action", render.Safe(x.CISARequiredAction))
+			}
+			line("SSVC", ssvcText(x))
+			if x.EPSS != nil {
+				text := percent(x.EPSS) + " chance of exploitation in 30 days"
+				var more []string
+				if x.EPSSPercentile != nil {
+					more = append(more, "above "+percent(x.EPSSPercentile)+" of CVEs")
+				}
+				if x.EPSSOn != "" {
+					more = append(more, day(x.EPSSOn))
+				}
+				if len(more) > 0 {
+					text += " (" + strings.Join(more, ", ") + ")"
+				}
+				line("EPSS", text)
+			}
+			line("CWE", render.Safe(strings.Join(e.Advisory.CWEIDs, ", ")))
 			if e.Fix != nil {
 				fix := e.Fix.ID + ", " + e.Fix.Status
 				if e.Fix.PullRequest != nil {
@@ -453,6 +490,46 @@ func newDepsCmd(a *app) *cobra.Command {
 		list, show, fix,
 		change("dismiss", "Say it isn't a risk here; a later match won't reopen it"),
 		change("restore", "Undo a dismissal"))
+}
+
+// day shows a date (2026-11-10) as "10 Nov 2026".
+func day(date string) string {
+	d, err := time.Parse(time.DateOnly, date)
+	if err != nil {
+		return render.Safe(date)
+	}
+	return d.Format("2 Jan 2006")
+}
+
+// percent is 0.912 as "91.2%"; "" for nil.
+func percent(p *float64) string {
+	switch {
+	case p == nil:
+		return ""
+	case *p > 0 && *p < 0.001:
+		return "<0.1%"
+	}
+	return strconv.FormatFloat(*p*100, 'f', 1, 64) + "%"
+}
+
+// ssvcText is CISA's SSVC decision points: "exploitation active,
+// automatable, technical impact partial"; "" when CISA said nothing.
+func ssvcText(x api.Exploitation) string {
+	var parts []string
+	if x.SSVCExploitation != "" {
+		parts = append(parts, "exploitation "+render.Safe(x.SSVCExploitation))
+	}
+	if x.SSVCAutomatable != nil {
+		if *x.SSVCAutomatable {
+			parts = append(parts, "automatable")
+		} else {
+			parts = append(parts, "not automatable")
+		}
+	}
+	if x.SSVCTechnicalImpact != "" {
+		parts = append(parts, "technical impact "+render.Safe(x.SSVCTechnicalImpact))
+	}
+	return strings.Join(parts, ", ")
 }
 
 func (a *app) exposure(ctx context.Context, method, id, action string) (*api.Exposure, []byte, error) {
