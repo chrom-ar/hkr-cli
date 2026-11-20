@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.2.2
 
 - `hkr deps list` says which CVEs are known to be exploited (CISA's KEV)
   and how likely exploitation is (FIRST's EPSS); `hkr deps show` adds
