@@ -22,6 +22,7 @@ type Scan struct {
 	FinishedAt         string `json:"finished_at"`
 	DurationMS         int64  `json:"duration_ms"`
 	PausedReason       string `json:"paused_reason"`
+	WorkingHoursEndAt  string `json:"working_hours_end_at"` // The deadline its schedule's working hours set, UTC.
 	WindingDown        bool   `json:"winding_down"`
 	Stopping           bool   `json:"stopping"`
 	Findings           struct {

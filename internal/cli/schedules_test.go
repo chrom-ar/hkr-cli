@@ -3,6 +3,8 @@ package cli
 import (
 	"strings"
 	"testing"
+
+	"github.com/chrom-ar/hkr-cli/internal/api"
 )
 
 func TestParseAt(t *testing.T) {
@@ -27,5 +29,12 @@ func TestParseWeekday(t *testing.T) {
 	}
 	if _, err := parseWeekday("funday"); err == nil || exitCode(err) != ExitUsage {
 		t.Errorf("parseWeekday(funday) = %v", err)
+	}
+}
+
+func TestWorkingHoursText(t *testing.T) {
+	hs := []api.WorkingHours{{Weekday: "tue", StartsAt: "20:00", EndsAt: "23:00"}, {Weekday: "sun", StartsAt: "22:00", EndsAt: "06:00"}}
+	if got, want := workingHoursText(hs), "Tue 20:00–23:00 · Sun 22:00–Mon 06:00"; got != want {
+		t.Errorf("workingHoursText = %q, want %q", got, want)
 	}
 }

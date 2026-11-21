@@ -17,4 +17,16 @@ type Schedule struct {
 	Paused             bool   `json:"paused"`
 	NextAt             string `json:"next_at"`
 	CreatedAt          string `json:"created_at"`
+	// WorkingHours are the weekly ranges it launches in, in TimeZone;
+	// each range's end is the scan's deadline. With them, Weekday and
+	// Time are empty.
+	WorkingHours []WorkingHours `json:"working_hours"`
+}
+
+// WorkingHours is a weekly range, HH:MM to HH:MM; an end at or before the
+// start is on the next day.
+type WorkingHours struct {
+	Weekday  string `json:"weekday"`
+	StartsAt string `json:"starts_at"`
+	EndsAt   string `json:"ends_at"`
 }

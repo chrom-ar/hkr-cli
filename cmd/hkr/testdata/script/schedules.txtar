@@ -40,3 +40,19 @@ stdout '^Deleted SchWeek7Kq2X\.$'
 # A delete answers nothing: --json prints nothing.
 exits 0 hkr schedules delete DomShop7Kq2X SchWeek7Kq2X --yes --json
 ! stdout .
+
+# Working hours: each range is a launch slot, and its end the scan's
+# deadline. A range can cross midnight.
+fake-hkr schedule.create.working_hours schedule.create.working_hours_invalid setup.get.complete domain.get.ok
+exits 0 hkr schedules create DomShop7Kq2X --working-hours 'tue 20:00-23:00' --working-hours 'Friday 22:00-06:00' --preset first_look --max-spend 150 --yes
+stdout '^Scheduled SchHour7Kq2X: in working hours Tue 20:00–23:00 · Fri 22:00–Sat 06:00 \(America/Argentina/Buenos_Aires\), next 18 Nov 2026 12:00\.$'
+
+exits 1 hkr schedules create DomShop7Kq2X --working-hours 'tue 20:00-23:00' --working-hours 'tue 22:00-23:30' --yes
+stderr '^  working_hours: overlap$'
+
+exits 2 hkr schedules create DomShop7Kq2X --working-hours 'tue 8pm-11pm' --yes
+stderr 'invalid --working-hours "tue 8pm-11pm": like "tue 20:00-23:00"'
+exits 2 hkr schedules create DomShop7Kq2X --working-hours 'tue 20:00-23:00' --at 03:00 --yes
+stderr '--working-hours doesn''t go with --at, --weekday, --day or --once'
+exits 2 hkr schedules create DomShop7Kq2X --working-hours 'tue 20:00-23:00' --max-duration 2h --yes
+stderr '--max-duration doesn''t go with --working-hours: each range''s end is the scan''s deadline'

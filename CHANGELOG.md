@@ -2,6 +2,21 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
+## Unreleased
+
+- Scans are bounded by money, not the clock: how a scan ended is said in
+  words (e.g. "Finished early: HKr stopped sending it back with budget
+  left"), a scan paused for making no progress says so, and `scans
+  show` says when a scan has no spending ceiling or no time limit.
+- `scans start` says when its preset stops early (e.g. "or earlier on a
+  confirmed high"), and when there's no spending ceiling, that the
+  balance is the limit. `--max-duration` is optional, with no default.
+- `hkr schedules create --working-hours 'tue 20:00-23:00'` (repeatable):
+  a schedule that launches only in those weekly ranges, each range's end
+  the scan's deadline; a range can cross midnight. `schedules list`
+  shows them (`Tue 20:00–23:00 · Fri 22:00–Sat 06:00`), and `scans
+  show` a running scan's deadline.
+
 ## 0.2.2
 
 - `hkr deps list` says which CVEs are known to be exploited (CISA's KEV)

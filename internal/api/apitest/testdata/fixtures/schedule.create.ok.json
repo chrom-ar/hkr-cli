@@ -27,7 +27,8 @@
       "preset_key": "first_look",
       "time": "03:00",
       "time_zone": "America/Argentina/Buenos_Aires",
-      "weekday": "mon"
+      "weekday": "mon",
+      "working_hours": []
     }
   }
 }

@@ -111,6 +111,8 @@ func (a *app) scanStatus(s *api.Scan) string {
 		return s.Status + ", stopping"
 	case s.WindingDown:
 		return s.Status + ", winding down"
+	case s.PausedReason == "no_progress":
+		return s.Status + " (no progress in 6 hours)"
 	case s.PausedReason != "":
 		return s.Status + " (" + render.Safe(s.PausedReason) + ")"
 	}
@@ -172,19 +174,28 @@ func (a *app) scanText(s *api.Scan, domain string, steps []api.Step, detail stri
 	limits := s.PresetKey
 	if s.MaxSpendUSD != "" {
 		limits += ", up to $" + s.MaxSpendUSD
+	} else {
+		limits += ", no spending ceiling"
 	}
 	if s.MaxDurationSeconds > 0 {
 		limits += ", up to " + durationText(secondsDuration(s.MaxDurationSeconds))
+	} else {
+		limits += ", no time limit"
 	}
 	line("Limits", strings.TrimPrefix(limits, ", "))
 	line("Cost", "$"+s.CostUSD)
 	line("Started", render.Time(s.StartedAt, a.env.Location, "2 Jan 2006 15:04"))
 	line("Finished", render.Time(s.FinishedAt, a.env.Location, "2 Jan 2006 15:04"))
+	if s.WorkingHoursEndAt != "" && s.FinishedAt == "" {
+		line("Deadline", render.Time(s.WorkingHoursEndAt, a.env.Location, "2 Jan 2006 15:04")+", the end of its working hours")
+	}
 	if s.Findings.New+s.Findings.Seen > 0 {
 		line("Findings", fmt.Sprintf("%d new, %d seen", s.Findings.New, s.Findings.Seen))
 	}
 	line("Asked", render.Safe(s.Instruction))
-	line("Ended", render.Safe(s.Completion))
+	if s.Completion != "" {
+		line("Ended", upperFirst(completionText(s.Completion))+".")
+	}
 	line("Error", render.Safe(s.ErrorText))
 	line("URL", render.Safe(s.URL))
 	var shown []string
@@ -251,7 +262,7 @@ func newScansStartCmd(a *app) *cobra.Command {
 				if err != nil {
 					return err
 				}
-				text := fmt.Sprintf("it stops at $%s (balance $%s; starting needs $%s)", q.MaxSpendUSD, q.BalanceUSD, q.StartFloorUSD)
+				text := quoteText(q, preset)
 				if q.PartiallyFunded {
 					text += ". Your balance doesn't reach that: it pauses when credit runs out, keeping what it found"
 				}
@@ -293,6 +304,45 @@ func newScansStartCmd(a *app) *cobra.Command {
 	c.Flags().StringVar(&failOn, "fail-on", "", "with --follow: exit 4 if it finds anything this severe")
 	addLimitsFlags(c, &preset, &spend, &duration)
 	return c
+}
+
+// completionText is how a scan ended, in words; an unknown code as is.
+func completionText(code string) string {
+	switch code {
+	case "released", "agent_done": // agent_done: older scans, the same thing.
+		return "finished early: HKr stopped sending it back with budget left"
+	case "budget_used":
+		return "used its budget"
+	case "asks_exhausted":
+		return "its answers stopped turning up anything new"
+	case "duration_exceeded":
+		return "past the time limit you set"
+	case "window_closed":
+		return "finished at the end of its working hours"
+	}
+	return render.Safe(code)
+}
+
+// earlyStop is when a preset stops before its spending ceiling.
+var earlyStop = map[string]string{
+	"first_look":       ", or earlier on a confirmed high",
+	"confidence_check": ", or earlier at the first medium it confirms",
+	"deep_run":         " unless highs come in a burst",
+	"until_critical":   ", or earlier on its count of highs",
+}
+
+// quoteText is where a scan would stop: "it stops at $40.00, or earlier
+// on a confirmed high (balance $120.00; starting needs $10.00)". preset
+// is --preset, when given.
+func quoteText(q *api.ScanQuote, preset string) string {
+	if q.MaxSpendUSD == "" {
+		stops := "it stops when your balance ($" + q.BalanceUSD + ") runs out"
+		if preset == "until_critical" {
+			stops = "it stops on its count of highs, else when your balance ($" + q.BalanceUSD + ") runs out"
+		}
+		return "it has no spending ceiling: " + stops + " (starting needs $" + q.StartFloorUSD + ")"
+	}
+	return fmt.Sprintf("it stops at $%s%s (balance $%s; starting needs $%s)", q.MaxSpendUSD, earlyStop[preset], q.BalanceUSD, q.StartFloorUSD)
 }
 
 func upperFirst(s string) string {

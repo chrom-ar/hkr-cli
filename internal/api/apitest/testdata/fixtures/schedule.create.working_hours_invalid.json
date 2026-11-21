@@ -1,0 +1,36 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/v1/orgs/acme/domains/DomShop7Kq2X/schedules",
+    "body": {
+      "interval": 1,
+      "period": "week",
+      "working_hours": [
+        {
+          "ends_at": "23:00",
+          "starts_at": "20:00",
+          "weekday": "tue"
+        },
+        {
+          "ends_at": "23:30",
+          "starts_at": "22:00",
+          "weekday": "tue"
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 422,
+    "body": {
+      "error": {
+        "code": "invalid",
+        "fields": {
+          "working_hours": [
+            "overlap"
+          ]
+        },
+        "message": "Some values aren't valid."
+      }
+    }
+  }
+}

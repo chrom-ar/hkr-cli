@@ -9,7 +9,7 @@ stdout '^1     running  first_look  \$0\.00  18 Nov 2026 12:00  0 new, 0 seen$'
 # show: the latest by default, with its timeline.
 exits 0 hkr scans show DomShop7Kq2X
 stdout '^Scan 1 of DomShop7Kq2X: running$'
-stdout '^Limits    first_look, up to \$300\.00$'
+stdout '^Limits    first_look, up to \$300\.00, no time limit$'
 stdout '^Cost      \$0\.00$'
 stdout '^Asked     Orders first\.$'
 stdout '^URL       http://127\.0\.0\.1:\d+/domains/DomShop7Kq2X/scans/1$'
@@ -29,3 +29,16 @@ stderr 'scan number "third": expected a number, like 3'
 fake-hkr scans.list.empty
 exits 0 hkr scans list DomShop7Kq2X
 stdout '^No scans yet\. Start one: hkr scans start DomShop7Kq2X$'
+
+# How a scan ended, and why one paused, in words.
+fake-hkr scan.get.released scan.steps.completed
+exits 0 hkr scans show DomShop7Kq2X 2
+stdout '^Ended     Finished early: HKr stopped sending it back with budget left\.$'
+fake-hkr scan.get.no_progress scan.steps.ok scan.steps.next
+exits 0 hkr scans show DomShop7Kq2X 1
+stdout '^Scan 1 of DomShop7Kq2X: paused \(no progress in 6 hours\)$'
+stdout '^Limits    until_critical, no spending ceiling, no time limit$'
+fake-hkr scan.get.window_closed scan.steps.completed
+exits 0 hkr scans show DomShop7Kq2X 2
+stdout '^Ended     Finished at the end of its working hours\.$'
+! stdout '^Deadline'

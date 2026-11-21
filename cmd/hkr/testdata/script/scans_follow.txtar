@@ -6,7 +6,7 @@ fake-hkr scan.get.completed scan.steps.completed findings.list.scan
 exits 0 hkr scans follow DomShop7Kq2X 2
 stdout '^12:00  Mapped the orders API$'
 stdout '^12:00  Read another customer''s order$'
-stdout '^Scan 2 of DomShop7Kq2X completed \(agent_done\): 1 new finding, \$0\.00\.$'
+stdout '^Scan 2 of DomShop7Kq2X completed \(used its budget\): 1 new finding, \$0\.00\.$'
 
 # --fail-on: exit 4 when the scan saw anything that severe, for CI.
 exits 4 hkr scans follow DomShop7Kq2X 2 --fail-on high

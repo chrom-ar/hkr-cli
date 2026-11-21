@@ -138,7 +138,7 @@ func (a *app) followScan(ctx context.Context, r scanRef, failOn, detail string) 
 	} else {
 		how := end.Status
 		if end.Completion != "" {
-			how += " (" + render.Safe(end.Completion) + ")"
+			how += " (" + completionText(end.Completion) + ")"
 		}
 		noun := "findings"
 		if end.Findings.New == 1 {

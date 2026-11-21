@@ -21,7 +21,8 @@
           "preset_key": null,
           "time": "03:00",
           "time_zone": "America/Argentina/Buenos_Aires",
-          "weekday": "mon"
+          "weekday": "mon",
+          "working_hours": []
         }
       ],
       "next_cursor": null

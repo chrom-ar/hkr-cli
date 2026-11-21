@@ -15,17 +15,66 @@ import (
 
 // parseAt reads --at: HH:MM, 24-hour.
 func parseAt(s string) (string, error) {
-	bad := usageError{fmt.Errorf("invalid --at %q: like 03:00 (24-hour, the organization's time zone)", s)}
+	if hhmm, ok := clock(s); ok {
+		return hhmm, nil
+	}
+	return "", usageError{fmt.Errorf("invalid --at %q: like 03:00 (24-hour, the organization's time zone)", s)}
+}
+
+// clock reads H:MM or HH:MM, 24-hour, as HH:MM.
+func clock(s string) (string, bool) {
 	h, m, ok := strings.Cut(s, ":")
 	if !ok || len(m) != 2 || h == "" || len(h) > 2 {
-		return "", bad
+		return "", false
 	}
 	hour, err1 := strconv.Atoi(h)
 	minute, err2 := strconv.Atoi(m)
 	if err1 != nil || err2 != nil || hour < 0 || hour > 23 || minute < 0 || minute > 59 {
-		return "", bad
+		return "", false
 	}
-	return fmt.Sprintf("%02d:%02d", hour, minute), nil
+	return fmt.Sprintf("%02d:%02d", hour, minute), true
+}
+
+// parseWorkingHours reads --working-hours: "tue 20:00-23:00"; an end at
+// or before the start is the next day. HKr checks the rest (length,
+// overlaps).
+func parseWorkingHours(s string) (api.WorkingHours, error) {
+	bad := usageError{fmt.Errorf(`invalid --working-hours %q: like "tue 20:00-23:00" (24-hour, the organization's time zone)`, s)}
+	day, span, ok := strings.Cut(strings.TrimSpace(s), " ")
+	if !ok {
+		return api.WorkingHours{}, bad
+	}
+	from, to, ok := strings.Cut(strings.ReplaceAll(strings.TrimSpace(span), "–", "-"), "-")
+	if !ok {
+		return api.WorkingHours{}, bad
+	}
+	wd, err := parseWeekday(day)
+	starts, ok1 := clock(strings.TrimSpace(from))
+	ends, ok2 := clock(strings.TrimSpace(to))
+	if err != nil || !ok1 || !ok2 {
+		return api.WorkingHours{}, bad
+	}
+	return api.WorkingHours{Weekday: wd, StartsAt: starts, EndsAt: ends}, nil
+}
+
+// workingHoursText is "Tue 20:00–23:00 · Fri 22:00–Sat 06:00".
+func workingHoursText(hs []api.WorkingHours) string {
+	days := []string{"mon", "tue", "wed", "thu", "fri", "sat", "sun"}
+	title := func(d string) string { return strings.ToUpper(d[:min(1, len(d))]) + d[min(1, len(d)):] }
+	parts := make([]string, 0, len(hs))
+	for _, h := range hs {
+		wd := render.Safe(h.Weekday)
+		end := render.Safe(h.EndsAt)
+		if h.EndsAt <= h.StartsAt {
+			for i, d := range days {
+				if d == h.Weekday {
+					end = title(days[(i+1)%7]) + " " + end
+				}
+			}
+		}
+		parts = append(parts, title(wd)+" "+render.Safe(h.StartsAt)+"–"+end)
+	}
+	return strings.Join(parts, " · ")
 }
 
 // parseWeekday reads --weekday: mon, Monday, MON … as HKr's "mon".
@@ -109,7 +158,11 @@ func newSchedulesListCmd(a *app) *cobra.Command {
 					if next == "" {
 						next = "—"
 					}
-					rows = append(rows, []string{s.ID, everyText(s), s.Time, next, scheduleLimits(s), status})
+					at := s.Time
+					if len(s.WorkingHours) > 0 {
+						at = workingHoursText(s.WorkingHours)
+					}
+					rows = append(rows, []string{s.ID, everyText(s), at, next, scheduleLimits(s), status})
 				}
 				if len(ss) > 0 {
 					a.progress("Times are in %s.", render.Safe(ss[0].TimeZone))
@@ -127,6 +180,7 @@ func newSchedulesCreateCmd(a *app) *cobra.Command {
 		every, weekday, at, once string
 		interval, day            int
 		preset, spend, duration  string
+		workingHours             []string
 	)
 	c := &cobra.Command{
 		Use:   "create <domain>",
@@ -135,10 +189,14 @@ func newSchedulesCreateCmd(a *app) *cobra.Command {
 			"--at, in the organization's time zone; or once, at --once (a time with\n" +
 			"its zone). Each scan has its own limits, else the domain's. A schedule\n" +
 			"spends credit unattended: it asks first, or takes --yes. Needs a token\n" +
-			"with setup changes.",
+			"with setup changes.\n\n" +
+			"--working-hours instead: weekly ranges (repeatable, up to 14, 30\n" +
+			"minutes or more, not overlapping) it launches in; each range's end is\n" +
+			"the scan's deadline. \"fri 22:00-06:00\" runs into Saturday.",
 		Example: "  hkr schedules create shop.example.com --every week --weekday mon --at 03:00\n" +
 			"  hkr schedules create shop.example.com --every month --day 1 --at 02:30 --max-spend 100\n" +
-			"  hkr schedules create shop.example.com --once 2026-12-01T06:00:00Z",
+			"  hkr schedules create shop.example.com --once 2026-12-01T06:00:00Z\n" +
+			"  hkr schedules create shop.example.com --working-hours 'tue 20:00-23:00' --working-hours 'fri 22:00-06:00'",
 		Args: argsBetween(1, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			body, err := limitsBody(preset, spend, duration)
@@ -146,6 +204,28 @@ func newSchedulesCreateCmd(a *app) *cobra.Command {
 				return err
 			}
 			switch {
+			case len(workingHours) > 0:
+				if at != "" || weekday != "" || day != 0 || once != "" {
+					return usageError{errors.New("--working-hours doesn't go with --at, --weekday, --day or --once")}
+				}
+				if duration != "" {
+					return usageError{errors.New("--max-duration doesn't go with --working-hours: each range's end is the scan's deadline")}
+				}
+				if every != "" && every != "week" {
+					return usageError{errors.New("--working-hours are weekly: leave out --every, or use --every week")}
+				}
+				hs := make([]api.WorkingHours, 0, len(workingHours))
+				for _, w := range workingHours {
+					h, err := parseWorkingHours(w)
+					if err != nil {
+						return err
+					}
+					hs = append(hs, h)
+				}
+				if interval < 1 {
+					return usageError{errors.New("--interval must be 1 or more")}
+				}
+				body["period"], body["interval"], body["working_hours"] = "week", interval, hs
 			case once != "" && every != "":
 				return usageError{errors.New("--once and --every don't go together")}
 			case once != "":
@@ -226,6 +306,7 @@ func newSchedulesCreateCmd(a *app) *cobra.Command {
 	f.IntVar(&day, "day", 0, "with --every month: the day of the month, 1 to 31")
 	f.StringVar(&at, "at", "", "the time, HH:MM in the organization's time zone")
 	f.StringVar(&once, "once", "", "instead of --every: one scan at this time (RFC 3339, with its zone)")
+	f.StringArrayVar(&workingHours, "working-hours", nil, `instead of --at: a weekly range it may scan in, like "tue 20:00-23:00" (repeatable)`)
 	addLimitsFlags(c, &preset, &spend, &duration)
 	return c
 }
@@ -241,6 +322,9 @@ func whenText(body map[string]any, tz string) string {
 	}
 	if body["period"] == "once" {
 		return fmt.Sprintf("once, at %v, each scan up to %s", body["starts_at"], spend)
+	}
+	if hs, ok := body["working_hours"].([]api.WorkingHours); ok {
+		return fmt.Sprintf("in working hours %s (%s), each scan up to %s and ending with its range", workingHoursText(hs), tz, spend)
 	}
 	s := api.Schedule{Period: fmt.Sprint(body["period"])}
 	s.Interval, _ = body["interval"].(int)
@@ -259,7 +343,10 @@ func whenText(body map[string]any, tz string) string {
 // scheduleText is "every week on mon at 03:00 (zone), next …".
 func (a *app) scheduleText(s api.Schedule) string {
 	text := "once"
-	if s.Period != "once" {
+	switch {
+	case len(s.WorkingHours) > 0:
+		text = "in working hours " + workingHoursText(s.WorkingHours) + " (" + render.Safe(s.TimeZone) + ")"
+	case s.Period != "once":
 		text = "every " + strings.TrimSuffix(everyText(s), " ("+s.Weekday+")")
 		if s.Weekday != "" {
 			text += " on " + s.Weekday

@@ -25,7 +25,8 @@
       "status": "running",
       "stopping": false,
       "url": "http://hkr.test/domains/DomShop7Kq2X/scans/1",
-      "winding_down": true
+      "winding_down": true,
+      "working_hours_end_at": null
     }
   }
 }

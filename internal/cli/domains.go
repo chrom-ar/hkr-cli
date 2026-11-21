@@ -512,7 +512,7 @@ func limitsBody(preset, spend, duration string) (map[string]any, error) {
 func addLimitsFlags(c *cobra.Command, preset, spend, duration *string) {
 	c.Flags().StringVar(preset, "preset", "", "first_look, confidence_check, deep_run or until_critical")
 	c.Flags().StringVar(spend, "max-spend", "", "the most a scan may spend, in USD")
-	c.Flags().StringVar(duration, "max-duration", "", "the longest a scan may run: 4h, 90m")
+	c.Flags().StringVar(duration, "max-duration", "", "a time limit, like 4h or 90m (none by default)")
 }
 
 func newDomainsLimitsCmd(a *app) *cobra.Command {
@@ -520,11 +520,17 @@ func newDomainsLimitsCmd(a *app) *cobra.Command {
 	c := &cobra.Command{
 		Use:   "limits <domain>",
 		Short: "Show, or set, the default limits of a domain's scans",
-		Long: "Show, or set, what a domain's scans may spend and how long they may\n" +
-			"run. --preset is first_look, confidence_check, deep_run or\n" +
-			"until_critical; --max-spend is in USD; --max-duration like 4h or 90m.",
+		Long: "Show, or set, what a domain's scans may spend. A scan is bounded by\n" +
+			"money: it runs up to --max-spend (USD), or stops earlier by its preset:\n" +
+			"  first_look        on a confirmed high\n" +
+			"  confidence_check  at the first medium it confirms\n" +
+			"  deep_run          to its ceiling, unless highs come in a burst\n" +
+			"  until_critical    on its count of highs; with no ceiling, the\n" +
+			"                    organization's balance is the limit\n" +
+			"--max-duration (like 4h or 90m) adds a time limit; there's none by\n" +
+			"default.",
 		Example: "  hkr domains limits shop.example.com\n" +
-			"  hkr domains limits shop.example.com --preset deep_run --max-spend 60 --max-duration 4h",
+			"  hkr domains limits shop.example.com --preset deep_run --max-spend 60",
 		Args: argsBetween(1, 1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			body, err := limitsBody(preset, spend, duration)

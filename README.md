@@ -66,13 +66,14 @@ hkr domains create shop.example.com
 hkr domains verify shop.example.com               # prints a DNS TXT record to publish
 hkr domains verify shop.example.com --check       # exits 1 until HKr sees it
 hkr domains attest shop.example.com --name 'Ada Lovelace'
-hkr domains limits shop.example.com --preset deep_run --max-spend 60 --max-duration 4h
+hkr domains limits shop.example.com --preset deep_run --max-spend 60
 hkr repos connect github                          # an admin authorizes it in the browser
 hkr links list --status proposed                  # which repository deploys which host
 hkr links confirm Ln2Kq2XpAb2m
 hkr links add acme/web api.shop.example.com
 hkr repos set acme/web --review-on-push on --watch-deps on --fix-level critical
 hkr schedules create shop.example.com --every week --weekday mon --at 03:00
+hkr schedules create shop.example.com --working-hours 'fri 22:00-06:00'   # launches in those hours, ends by 06:00
 ```
 
 `attest` signs, in your name, that you have the owner's authorization
