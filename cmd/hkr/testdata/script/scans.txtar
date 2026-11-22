@@ -42,3 +42,6 @@ fake-hkr scan.get.window_closed scan.steps.completed
 exits 0 hkr scans show DomShop7Kq2X 2
 stdout '^Ended     Finished at the end of its working hours\.$'
 ! stdout '^Deadline'
+fake-hkr scan.get.running_window scan.steps.ok scan.steps.next
+exits 0 hkr scans show DomShop7Kq2X 1
+stdout '^Deadline  18 Nov 2026 12:00, the end of its working hours$'
