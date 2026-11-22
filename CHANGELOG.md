@@ -2,7 +2,7 @@
 
 What changed in each release of `hkr`, for the people who use it.
 
-## Unreleased
+## 0.3.0
 
 - Scans are bounded by money, not the clock: how a scan ended is said in
   words (e.g. "Finished early: HKr stopped sending it back with budget
